@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Digital Dashboard</title>
+    <style>
+        :root {
+            --monopoly-green: #1f8a4c;
+            --monopoly-dark-red: #7a0010;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --border-main: 3px solid #000000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #e8f4f0; color: var(--text-dark); padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        .global-status-banner { width: 100%; max-width: 900px; background: #fff; border: var(--border-main); border-radius: 12px; padding: 15px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; text-align: center; }
+        .status-card { background: #f8f9fa; border: 1px solid #ccc; padding: 10px; border-radius: 6px; }
+        .status-card h4 { font-size: 12px; text-transform: uppercase; color: #7f8c8d; margin-bottom: 5px; }
+        .status-card div { font-size: 22px; font-weight: bold; color: var(--text-dark); }
+        .status-card div.money { color: #27ae60; }
+        .status-card div.debt { color: #c0392b; }
+
+        .dashboard-container { width: 100%; max-width: 900px; background-color: var(--monopoly-green); border: 4px solid #000000; border-radius: 12px; padding: 15px; }
+        .header { background-color: var(--monopoly-dark-red); color: white; text-align: center; padding: 15px; font-size: 28px; font-weight: 900; border: var(--border-main); border-radius: 6px; margin-bottom: 15px; text-transform: uppercase; }
+        .ble-status-panel { background: #ffffff; border: 2px solid #000000; border-radius: 6px; padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .status-dot { display: inline-block; width: 12px; height: 12px; background-color: #e74c3c; border-radius: 50%; margin-right: 6px; }
+        .status-dot.connected { background-color: #2ecc71; }
+        .btn-connect { background-color: #3498db; color: white; border: 2px solid #000000; padding: 6px 12px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        
+        .grid-main { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media(min-width: 768px) { .grid-main { grid-template-columns: 1.3fr 1fr; } }
+
+        .panel { background-color: var(--card-bg); border: var(--border-main); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .panel-title { font-weight: bold; font-size: 16px; margin-bottom: 12px; text-transform: uppercase; border-bottom: 2px solid #000000; width: 100%; text-align: center; padding-bottom: 4px; }
+        .control-block { width: 100%; display: flex; gap: 10px; margin-bottom: 15px; }
+        .action-btn { width: 100%; padding: 12px; font-size: 14px; font-weight: bold; color: white; background-color: var(--monopoly-dark-red); border: 2px solid #000000; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        .action-btn.secondary { background-color: #f39c12; }
+        .action-btn.special { background-color: #8e44ad; font-size: 16px; padding: 16px; }
+
+        .property-list-container { width: 100%; max-height: 420px; overflow-y: auto; border: 2px solid #000000; border-radius: 6px; padding: 5px; background: #fcfcfc; }
+        .property-row { display: flex; align-items: center; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; background: white; overflow: hidden; font-size: 12px; transition: opacity 0.2s; }
+        .property-color-bar { width: 15px; height: 45px; flex-shrink: 0; border-right: 1px solid #000000; }
+        .property-details { flex-grow: 1; padding: 5px 8px; display: flex; flex-direction: column; justify-content: center; }
+        .prop-name { font-weight: bold; text-transform: uppercase; margin-bottom: 2px; font-size: 11px; }
+        .prop-meta { color: #555; display: flex; justify-content: space-between; }
+
+        .c-0 { background-color: #955436; } .c-1 { background-color: #aae0fa; } .c-2 { background-color: #d93a96; } .c-3 { background-color: #f7941d; }
+        .c-4 { background-color: #ed1c24; } .c-5 { background-color: #fef200; } .c-6 { background-color: #00a651; } .c-7 { background-color: #0054a6; }
+        .c-8 { background-color: #ffffff; background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%); background-size: 6px 6px; }
+        .c-9 { background-color: #ced6e0; }
+
+        .console-log { margin-top: 10px; background: #000; color: #00ff00; font-family: monospace; font-size: 11px; padding: 8px; border-radius: 4px; width: 100%; height: 75px; overflow-y: auto; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <div class="global-status-banner">
+        <div class="status-card">
+            <h4>Player 1 Ledger</h4>
+            <div class="money" id="p1-bal">$ --</div>
+        </div>
+        <div class="status-card">
+            <h4>Player 2 Ledger</h4>
+            <div class="money" id="p2-bal">$ --</div>
+        </div>
+        <div class="status-card">
+            <h4>Outstanding Debt</h4>
+            <div class="debt" id="debt-amt">$ --</div>
+        </div>
+        <div class="status-card">
+            <h4>Active State Code</h4>
+            <div id="state-id" style="font-size: 14px; padding-top: 5px; font-weight: bold;">Offline</div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="header">Monopoly Dashboard</div>
+        
+        <div class="ble-status-panel">
+            <div><span id="statusDot" class="status-dot"></span><span id="statusText">Disconnected</span></div>
+            <button class="btn-connect" id="mainConnectBtn" onclick="toggleBLEConnection()">Connect Link</button>
+        </div>
+
+        <div class="grid-main">
+            <div class="panel">
+                <div class="panel-title">Properties Matrix</div>
+                <div class="control-block">
+                    <button class="action-btn" onclick="sendMonopolyCommand('CMD_BUY')">Buy Mode</button>
+                    <button class="action-btn secondary" onclick="sendMonopolyCommand('CMD_MORTGAGE')">Mortgage Hub</button>
+                </div>
+                <div class="property-list-container" id="propsContainer">Loading properties map...</div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Player Registry Ledgers</div>
+                <button class="action-btn" style="margin-bottom:10px;" onclick="sendMonopolyCommand('CMD_ADD_MONEY')">Add Money</button>
+                <button class="action-btn secondary" style="margin-bottom:20px;" onclick="sendMonopolyCommand('CMD_RENT')">Check Balance</button>
+                
+                <div style="width:100%; border-top:1px dashed #ccc; padding-top:15px; margin-bottom:15px;">
+                    <button class="action-btn special" onclick="sendMonopolyCommand('CMD_INTEREST_BID')">What Bid's Your Interest</button>
+                </div>
+                <div class="console-log" id="terminalOut">System Ready. Click "Connect Link" above to pair hardware.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
+        const CHAR_UUID    = "19b10001-e8f2-537e-4f6c-d104768a1214";
+
+        let bleDevice = null, bleChar = null;
+
+        const STATE_MAP = [
+            "STANDBY", "BUY_WAIT_PROPERTY", "BUY_WAIT_PLAYER", 
+            "RENT_WAIT_SECOND", "UTILITY_ROLL", "UPGRADE_WAIT_PROPERTY", 
+            "UPGRADE_SELECT", "MORTGAGE_WAIT_PROPERTY", "MORTGAGE_LIQUIDATE", 
+            "MORTGAGE_CONFIRM", "DEBT_COLLECTION", "DEBT_PARDON", 
+            "DEBT_TRADE", "OFF"
+        ];
+
+        const propertyNames = [
+            {n:"Old Kent Road", c:0}, {n:"Whitechapel Road", c:0}, {n:"The Angel Islington", c:1}, {n:"Euston Road", c:1}, {n:"Pentonville Road", c:1},
+            {n:"Pall Mall", c:2}, {n:"Whitehall", c:2}, {n:"Northumberland Ave", c:2}, {n:"Bow Street", c:3}, {n:"Marlborough Street", c:3},
+            {n:"Vine Street", c:3}, {n:"Strand", c:4}, {n:"Fleet Street", c:4}, {n:"Trafalgar Square", c:4}, {n:"Leicester Square", c:5},
+            {n:"Coventry Street", c:5}, {n:"Piccadilly", c:5}, {n:"Regent Street", c:6}, {n:"Oxford Street", c:6}, {n:"Bond Street", c:6},
+            {n:"Park Lane", c:7}, {n:"Mayfair", c:7}, {n:"Kings Cross Stn", c:8}, {n:"Marylebone Stn", c:8}, {n:"Fenchurch St Stn", c:8},
+            {n:"Liverpool St Stn", c:8}, {n:"Electric Company", c:9}, {n:"Water Works", c:9}
+        ];
+
+        function buildInitialDOM() {
+            const container = document.getElementById("propsContainer");
+            container.innerHTML = propertyNames.map((p, i) => `
+                <div class="property-row" id="prop-${i}">
+                    <div class="property-color-bar c-${p.c}"></div>
+                    <div class="property-details">
+                        <div class="prop-name">${p.n}</div>
+                        <div class="prop-meta">
+                            <span id="owner-${i}">Own: Bank</span>
+                            <span id="houses-${i}">Houses: 0 | <small>Rent: $0</small></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function logger(msg) { 
+            const term = document.getElementById("terminalOut");
+            term.innerText = `> ${msg}\n` + term.innerText; 
+        }
+
+        async function toggleBLEConnection() {
+            if (bleDevice && bleDevice.gatt.connected) { 
+                bleDevice.gatt.disconnect(); 
+                return; 
+            }
+            try {
+                logger("Requesting device matching UUID...");
+                bleDevice = await navigator.bluetooth.requestDevice({ 
+                    filters: [{ services: [SERVICE_UUID] }]
+                });
+                
+                bleDevice.addEventListener('gattserverdisconnected', handleDisconnect);
+                logger("Opening secure client pairing stream...");
+                
+                const server = await bleDevice.gatt.connect();
+                const service = await server.getPrimaryService(SERVICE_UUID);
+                bleChar = await service.getCharacteristic(CHAR_UUID);
+
+                await bleChar.startNotifications();
+                bleChar.addEventListener('characteristicvaluechanged', handleIncomingData);
+
+                // Force initial sync
+                sendMonopolyCommand('CMD_SYNC');
+
+                document.getElementById("statusDot").classList.add("connected");
+                document.getElementById("statusText").innerText = "Connected";
+                document.getElementById("mainConnectBtn").innerText = "Disconnect Link";
+                logger("Connected! Awaiting data updates...");
+            } catch (err) { 
+                logger(`Connection Error: ${err.message}`); 
+                handleDisconnect(); 
+            }
+        }
+
+        function handleDisconnect() {
+            document.getElementById("statusDot").classList.remove("connected");
+            document.getElementById("statusText").innerText = "Disconnected";
+            document.getElementById("mainConnectBtn").innerText = "Connect Link";
+            bleChar = null; 
+            bleDevice = null; 
+            logger("BLE connection dropped.");
+        }
+
+        function handleIncomingData(event) {
+            const rawDecoder = new TextDecoder('utf-8');
+            const streamString = rawDecoder.decode(event.target.value).trim();
+            
+            if (streamString.startsWith("{") && streamString.endsWith("}")) {
+                try {
+                    const gameData = JSON.parse(streamString);
+                    
+                    document.getElementById('p1-bal').innerText = "$" + gameData.p1;
+                    document.getElementById('p2-bal').innerText = "$" + gameData.p2;
+                    document.getElementById('debt-amt').innerText = "$" + gameData.d;
+                    
+                    if (gameData.p) {
+                        gameData.p.forEach((prop, i) => {
+                            const ownerEl = document.getElementById(`owner-${i}`);
+                            const houseEl = document.getElementById(`houses-${i}`);
+            
+                            const o = prop[0];
+                            const h = prop[1];
+                            const r = prop[2];
+
+                            ownerEl.innerText = (o === -1) ? "Own: Bank" : `Own: P${o + 1}`;
+                            houseEl.innerHTML = `Houses: ${h} | <small>Rent: $${r}</small>`;
+                        });
+                    }
+                    
+                    const stateIdx = parseInt(gameData.s);
+                    if (stateIdx >= 0 && stateIdx < STATE_MAP.length) {
+                        document.getElementById('state-id').innerText = STATE_MAP[stateIdx];
+                    } else {
+                        document.getElementById('state-id').innerText = "UNKNOWN (" + stateIdx + ")";
+                    }
+                } catch (jsonErr) {
+                    console.error("JSON Error:", jsonErr);
+                }
+            }
+        }
+
+        async function sendMonopolyCommand(payload) {
+            if (!bleChar) return;
+            try { 
+                await bleChar.writeValueWithoutResponse(new TextEncoder().encode(payload.trim()));
+                logger(`Dispatched token: ${payload}`);
+            } catch (err) { 
+                logger(`Command failed: ${err.message}`); 
+            }
+        }
+
+        // Initialize the DOM immediately on load
+        buildInitialDOM();
+    </script>
+</body>
+</html>
