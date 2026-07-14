@@ -3,247 +3,792 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monopoly Digital Dashboard</title>
+    <title>Monopoly ESP32 Dashboard</title>
     <style>
-        :root {
-            --monopoly-green: #1f8a4c;
-            --monopoly-dark-red: #7a0010;
-            --card-bg: #ffffff;
-            --text-dark: #2c3e50;
-            --border-main: 3px solid #000000;
+        /* --- IMPORT DIGITAL CLOCK FONT --- */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #e8f4f0; color: var(--text-dark); padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ce1126; /* Monopoly Red */
+            color: white;
+            min-height: 100vh;
+        }
+
+        b, strong, h1, h2, h3, .amasis-font {
+            font-family: 'Amasis MT Pro', 'Times New Roman', serif;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- DASHBOARD PAGE --- */
+        #dashboard-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .monopoly-title {
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            border: 4px solid white;
+            padding: 10px 20px;
+            background-color: #ce1126;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        /* --- BLUETOOTH CONNECTION STYLES --- */
+        .connect-btn {
+            background-color: #000;
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+            text-transform: uppercase;
+        }
+
+        .connect-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+        }
+
+        .status-container {
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            font-family: 'Arial', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .status-disconnected { color: #ff3333; text-shadow: 0 0 5px #ff3333; }
+        .status-connected { color: #32cd32; text-shadow: 0 0 5px #32cd32; }
+
+        /* --- DASHBOARD PLAYERS LIST --- */
+        #dashboard-players {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-player-card {
+            background-color: #f4f0ec;
+            color: black;
+            border: 3px solid black;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-player-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .dashboard-player-balance {
+            color: #2e8b57;
+            font-size: 1.4rem;
+        }
+
+        /* DIGITAL CLOCK STYLING */
+        .dashboard-player-time {
+            font-family: 'Share Tech Mono', monospace; 
+            font-size: 1.2rem;
+            color: #ff3333; 
+            background-color: #111; 
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 3px 12px;
+            display: inline-block;
+            margin-top: 8px;
+            box-shadow: inset 0px 0px 6px rgba(0,0,0,0.8);
+            letter-spacing: 2px;
+            text-shadow: 0 0 4px rgba(255, 51, 51, 0.5); 
+        }
+
+        /* --- DASHBOARD MENU BUTTONS --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .menu-btn {
+            background-color: #f4f0ec; 
+            color: #ce1126;
+            border: 4px solid black; 
+            border-radius: 15px;
+            aspect-ratio: 1 / 1;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 6px 0px black; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .menu-btn:first-child {
+            grid-column: span 2;
+            aspect-ratio: auto;
+            padding: 30px;
+        }
+
+        .menu-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0px black;
+        }
+
+        .menu-icon { font-size: 3rem; margin-bottom: 10px; }
+
+        /* --- SUB-PAGES GENERAL STYLES --- */
+        .page {
+            padding: 20px;
+            background-color: #e8e4d9; 
+            color: black;
+            min-height: 100vh;
+        }
+
+        .header-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background-color: #ce1126;
+            color: white;
+            border: 2px solid black; 
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 black;
+        }
         
-        .global-status-banner { width: 100%; max-width: 900px; background: #fff; border: var(--border-main); border-radius: 12px; padding: 15px; margin-bottom: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; text-align: center; }
-        .status-card { background: #f8f9fa; border: 1px solid #ccc; padding: 10px; border-radius: 6px; }
-        .status-card h4 { font-size: 12px; text-transform: uppercase; color: #7f8c8d; margin-bottom: 5px; }
-        .status-card div { font-size: 22px; font-weight: bold; color: var(--text-dark); }
-        .status-card div.money { color: #27ae60; }
-        .status-card div.debt { color: #c0392b; }
+        .back-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 black;
+        }
 
-        .dashboard-container { width: 100%; max-width: 900px; background-color: var(--monopoly-green); border: 4px solid #000000; border-radius: 12px; padding: 15px; }
-        .header { background-color: var(--monopoly-dark-red); color: white; text-align: center; padding: 15px; font-size: 28px; font-weight: 900; border: var(--border-main); border-radius: 6px; margin-bottom: 15px; text-transform: uppercase; }
-        .ble-status-panel { background: #ffffff; border: 2px solid #000000; border-radius: 6px; padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .status-dot { display: inline-block; width: 12px; height: 12px; background-color: #e74c3c; border-radius: 50%; margin-right: 6px; }
-        .status-dot.connected { background-color: #2ecc71; }
-        .btn-connect { background-color: #3498db; color: white; border: 2px solid #000000; padding: 6px 12px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        .page-title {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            flex-grow: 1;
+        }
+
+        /* --- VIEW TOGGLES --- */
+        .view-toggles { display: flex; gap: 10px; }
+
+        .toggle-btn {
+            background-color: #ccc;
+            color: #333;
+            border: 2px solid #000;
+            padding: 8px 12px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggle-btn.active {
+            background-color: #2e8b57;
+            color: white;
+        }
+
+        /* --- PROPERTIES (CARDS) --- */
+        .property-card {
+            background-color: #f4f0ec; 
+            border: 2px solid black;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+            font-size: 0.8rem;
+            min-height: 320px;
+        }
+
+        .card-header {
+            border: 2px solid black;
+            margin: 4px;
+            padding: 10px 2px;
+            text-transform: uppercase;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-header h3 { font-size: 0.8rem; margin: 0; }
+
+        .card-body {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex-grow: 1;
+        }
+
+        .rent-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 4px;
+        }
+
+        .rent-row.highlight {
+            border: 2px solid #ffcc00;
+            background-color: rgba(255, 204, 0, 0.4);
+            border-radius: 3px;
+        }
         
-        .grid-main { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 768px) { .grid-main { grid-template-columns: 1.3fr 1fr; } }
+        .rent-row.highlight b { color: black; }
 
-        .panel { background-color: var(--card-bg); border: var(--border-main); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .panel-title { font-weight: bold; font-size: 16px; margin-bottom: 12px; text-transform: uppercase; border-bottom: 2px solid #000000; width: 100%; text-align: center; padding-bottom: 4px; }
-        .control-block { width: 100%; display: flex; gap: 10px; margin-bottom: 15px; }
-        .action-btn { width: 100%; padding: 12px; font-size: 14px; font-weight: bold; color: white; background-color: var(--monopoly-dark-red); border: 2px solid #000000; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .action-btn.secondary { background-color: #f39c12; }
-        .action-btn.special { background-color: #8e44ad; font-size: 16px; padding: 16px; }
+        .card-footer {
+            margin-top: auto;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding-bottom: 5px;
+        }
+        
+        .owner-banner {
+            padding: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-top: 2px solid black;
+        }
 
-        .property-list-container { width: 100%; max-height: 420px; overflow-y: auto; border: 2px solid #000000; border-radius: 6px; padding: 5px; background: #fcfcfc; }
-        .property-row { display: flex; align-items: center; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; background: white; overflow: hidden; font-size: 12px; transition: opacity 0.2s; }
-        .property-color-bar { width: 15px; height: 45px; flex-shrink: 0; border-right: 1px solid #000000; }
-        .property-details { flex-grow: 1; padding: 5px 8px; display: flex; flex-direction: column; justify-content: center; }
-        .prop-name { font-weight: bold; text-transform: uppercase; margin-bottom: 2px; font-size: 11px; }
-        .prop-meta { color: #555; display: flex; justify-content: space-between; }
+        .owner-bank { background-color: #e0e0e0; color: #555; }
+        .owner-p1 { background-color: #cce5ff; color: #004085; }
+        .owner-p2 { background-color: #d4edda; color: #155724; }
+        .owner-p3 { background-color: #fff3cd; color: #856404; }
+        .owner-p4 { background-color: #f8d7da; color: #721c24; }
 
-        .c-0 { background-color: #955436; } .c-1 { background-color: #aae0fa; } .c-2 { background-color: #d93a96; } .c-3 { background-color: #f7941d; }
-        .c-4 { background-color: #ed1c24; } .c-5 { background-color: #fef200; } .c-6 { background-color: #00a651; } .c-7 { background-color: #0054a6; }
-        .c-8 { background-color: #ffffff; background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%); background-size: 6px 6px; }
-        .c-9 { background-color: #ced6e0; }
+        /* --- PROPERTIES (GRID VIEW DEFAULT) --- */
+        #properties-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-        .console-log { margin-top: 10px; background: #000; color: #00ff00; font-family: monospace; font-size: 11px; padding: 8px; border-radius: 4px; width: 100%; height: 75px; overflow-y: auto; white-space: pre-wrap; }
+        @media (min-width: 768px) {
+            #properties-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* --- PROPERTIES (HORIZONTAL SCROLL VIEW) --- */
+        #properties-scroll {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .owner-section {
+            margin-bottom: 30px;
+            background-color: #f4f0ec; 
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 2px solid #000;
+        }
+
+        .owner-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #ce1126;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .horizontal-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px; 
+            padding-bottom: 10px;
+            scroll-snap-type: x mandatory; 
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar { display: none; }
+
+        .grid-page {
+            display: grid;
+            grid-template-columns: repeat(2, 150px);
+            grid-template-rows: repeat(2, auto); 
+            justify-content: center;
+            gap: 10px;
+            min-width: 100%; 
+            flex-shrink: 0;
+            scroll-snap-align: center;
+        }
+
+        .grid-page .property-card {
+            width: 150px; 
+            min-width: 150px;
+            max-width: 150px;
+            min-height: 220px;
+            font-size: 0.65rem; 
+        }
+
+        .grid-page .card-header { min-height: 45px; padding: 6px 2px; margin: 2px; }
+        .grid-page .card-header span { font-size: 0.55rem !important; }
+        .grid-page .card-header h3 { font-size: 0.7rem; }
+        .grid-page .card-body { padding: 4px; gap: 2px; }
+        .grid-page .rent-row { padding: 2px 4px; }
+        .grid-page .rent-row.highlight { border: 2px solid #ffcc00; }
+        .grid-page .card-footer { font-size: 0.55rem; margin-top: 4px; padding-top: 4px; }
+        .grid-page .owner-banner { font-size: 0.7rem; padding: 6px; }
+        
+        .placeholder-text { text-align: center; padding: 50px; font-size: 1.2rem; color: #666; }
+
     </style>
 </head>
 <body>
 
-    <div class="global-status-banner">
-        <div class="status-card">
-            <h4>Player 1 Ledger</h4>
-            <div class="money" id="p1-bal">$ --</div>
+    <div id="dashboard-page">
+        <h1 class="monopoly-title">MONOPOLY</h1>
+        <h2 class="dashboard-subtitle">Dashboard</h2>
+
+        <button class="connect-btn amasis-font" id="bleConnectBtn">Connect ESP32</button>
+
+        <div class="status-container" id="statusContainer">
+            Status: <span class="status-dot status-disconnected" id="statusDot">●</span> <span id="statusText">Disconnected</span>
         </div>
-        <div class="status-card">
-            <h4>Player 2 Ledger</h4>
-            <div class="money" id="p2-bal">$ --</div>
-        </div>
-        <div class="status-card">
-            <h4>Outstanding Debt</h4>
-            <div class="debt" id="debt-amt">$ --</div>
-        </div>
-        <div class="status-card">
-            <h4>Active State Code</h4>
-            <div id="state-id" style="font-size: 14px; padding-top: 5px; font-weight: bold;">Offline</div>
+
+        <div id="dashboard-players"></div>
+
+        <div class="menu-grid">
+            <button class="menu-btn" onclick="showPage('properties-page')">
+                <div class="menu-icon">🏠</div>
+                <b class="amasis-font">Properties</b>
+            </button>
+            <button class="menu-btn" onclick="showPage('draw-page')">
+                <div class="menu-icon">🃏</div>
+                <b class="amasis-font">Draw Card</b>
+            </button>
+            <button class="menu-btn" onclick="showPage('about-page')">
+                <div class="menu-icon">ℹ️</div>
+                <b class="amasis-font">About</b>
+            </button>
         </div>
     </div>
 
-    <div class="dashboard-container">
-        <div class="header">Monopoly Dashboard</div>
-        
-        <div class="ble-status-panel">
-            <div><span id="statusDot" class="status-dot"></span><span id="statusText">Disconnected</span></div>
-            <button class="btn-connect" id="mainConnectBtn" onclick="toggleBLEConnection()">Connect Link</button>
+    <div id="properties-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('dashboard-page')">⬅ Back</button>
+            <h2 class="page-title">Properties</h2>
+            <div class="view-toggles">
+                <button id="btn-grid-view" class="toggle-btn active" onclick="switchPropertyView('grid')">Default Mode</button>
+                <button id="btn-scroll-view" class="toggle-btn" onclick="switchPropertyView('scroll')">Sideway Scroll Mode</button>
+            </div>
         </div>
+        
+        <div id="properties-grid"></div>
 
-        <div class="grid-main">
-            <div class="panel">
-                <div class="panel-title">Properties Matrix</div>
-                <div class="control-block">
-                    <button class="action-btn" onclick="sendMonopolyCommand('CMD_BUY')">Buy Mode</button>
-                    <button class="action-btn secondary" onclick="sendMonopolyCommand('CMD_MORTGAGE')">Mortgage Hub</button>
-                </div>
-                <div class="property-list-container" id="propsContainer">Loading properties map...</div>
-            </div>
+        <div id="properties-scroll" class="hidden"></div>
+    </div>
 
-            <div class="panel">
-                <div class="panel-title">Player Registry Ledgers</div>
-                <button class="action-btn" style="margin-bottom:10px;" onclick="sendMonopolyCommand('CMD_ADD_MONEY')">Add Money</button>
-                <button class="action-btn secondary" style="margin-bottom:20px;" onclick="sendMonopolyCommand('CMD_RENT')">Check Balance</button>
-                
-                <div style="width:100%; border-top:1px dashed #ccc; padding-top:15px; margin-bottom:15px;">
-                    <button class="action-btn special" onclick="sendMonopolyCommand('CMD_INTEREST_BID')">What Bid's Your Interest</button>
-                </div>
-                <div class="console-log" id="terminalOut">System Ready. Click "Connect Link" above to pair hardware.</div>
-            </div>
+    <div id="draw-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('dashboard-page')">⬅ Back</button>
+            <h2 class="page-title">Draw a Card</h2>
+        </div>
+        <div class="placeholder-text">This section is currently empty.</div>
+    </div>
+
+    <div id="about-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('dashboard-page')">⬅ Back</button>
+            <h2 class="page-title">About</h2>
+        </div>
+        <div class="placeholder-text">
+            <b>Monopoly ESP32 Project</b><br><br>
+            Hosted on GitHub. Connected via Web Bluetooth.
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // UI NAVIGATION & TOGGLES
+        // ==========================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page, #dashboard-page').forEach(el => el.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function switchPropertyView(view) {
+            const gridView = document.getElementById('properties-grid');
+            const scrollView = document.getElementById('properties-scroll');
+            const btnGrid = document.getElementById('btn-grid-view');
+            const btnScroll = document.getElementById('btn-scroll-view');
+
+            if (view === 'grid') {
+                gridView.classList.remove('hidden');
+                scrollView.classList.add('hidden');
+                btnGrid.classList.add('active');
+                btnScroll.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                scrollView.classList.remove('hidden');
+                btnGrid.classList.remove('active');
+                btnScroll.classList.add('active');
+            }
+        }
+
+        // ==========================================
+        // DATA ARRAYS (Tied to ESP32 State)
+        // ==========================================
+        let playersDatabase = [
+            { id: 1, name: "Player 1 (Erl)", balance: 1500, time: "10:00" },
+            { id: 2, name: "Player 2", balance: 1000, time: "10:00" },
+            { id: 3, name: "Player 3", balance: 1200, time: "10:00" },
+            { id: 4, name: "Player 4", balance: 1850, time: "10:00" }
+        ];
+
+        let propertiesDatabase = [
+            { name: "OLD KENT ROAD", type: "street", color: "#8B4513", price: 60, r0: 2, r1: 10, r2: 30, r3: 90, r4: 160, r5: 250, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
+            { name: "WHITECHAPEL ROAD", type: "street", color: "#8B4513", price: 60, r0: 4, r1: 20, r2: 60, r3: 180, r4: 320, r5: 450, houseCost: 50, housesOwned: 1, ownerIndex: 0 },
+            { name: "THE ANGEL ISLINGTON", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
+            { name: "EUSTON ROAD", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
+            { name: "PENTONVILLE ROAD", type: "street", color: "#87CEEB", price: 120, r0: 8, r1: 40, r2: 100, r3: 300, r4: 450, r5: 600, houseCost: 50, housesOwned: 2, ownerIndex: 1 },
+            { name: "PALL MALL", type: "street", color: "#FF1493", price: 140, r0: 10, r1: 50, r2: 150, r3: 450, r4: 625, r5: 750, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
+            { name: "WHITEHALL", type: "street", color: "#FF1493", price: 140, r0: 10, r1: 50, r2: 150, r3: 450, r4: 625, r5: 750, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
+            { name: "NORTHUMBERLAND AVE", type: "street", color: "#FF1493", price: 160, r0: 12, r1: 60, r2: 180, r3: 500, r4: 700, r5: 900, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
+            { name: "BOW STREET", type: "street", color: "#FF8C00", price: 180, r0: 14, r1: 70, r2: 200, r3: 550, r4: 750, r5: 950, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
+            { name: "MARLBOROUGH STREET", type: "street", color: "#FF8C00", price: 180, r0: 14, r1: 70, r2: 200, r3: 550, r4: 750, r5: 950, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
+            { name: "VINE STREET", type: "street", color: "#FF8C00", price: 200, r0: 16, r1: 80, r2: 220, r3: 600, r4: 800, r5: 1000, houseCost: 100, housesOwned: 5, ownerIndex: 0 },
+            { name: "STRAND", type: "street", color: "#FF0000", price: 220, r0: 18, r1: 90, r2: 250, r3: 700, r4: 875, r5: 1050, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "FLEET STREET", type: "street", color: "#FF0000", price: 220, r0: 18, r1: 90, r2: 250, r3: 700, r4: 875, r5: 1050, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "TRAFALGAR SQUARE", type: "street", color: "#FF0000", price: 240, r0: 20, r1: 100, r2: 300, r3: 750, r4: 925, r5: 1100, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "LEICESTER SQUARE", type: "street", color: "#FFD700", price: 260, r0: 22, r1: 110, r2: 330, r3: 800, r4: 975, r5: 1150, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "COVENTRY STREET", type: "street", color: "#FFD700", price: 260, r0: 22, r1: 110, r2: 330, r3: 800, r4: 975, r5: 1150, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "PICCADILLY", type: "street", color: "#FFD700", price: 280, r0: 24, r1: 120, r2: 360, r3: 850, r4: 1025, r5: 1200, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
+            { name: "REGENT STREET", type: "street", color: "#008000", price: 300, r0: 26, r1: 130, r2: 390, r3: 900, r4: 1100, r5: 1275, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
+            { name: "OXFORD STREET", type: "street", color: "#008000", price: 300, r0: 26, r1: 130, r2: 390, r3: 900, r4: 1100, r5: 1275, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
+            { name: "BOND STREET", type: "street", color: "#008000", price: 320, r0: 28, r1: 150, r2: 450, r3: 1000, r4: 1200, r5: 1400, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
+            { name: "PARK LANE", type: "street", color: "#00008B", price: 350, r0: 35, r1: 175, r2: 500, r3: 1100, r4: 1300, r5: 1500, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
+            { name: "MAYFAIR", type: "street", color: "#00008B", price: 400, r0: 50, r1: 200, r2: 600, r3: 1400, r4: 1700, r5: 2000, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
+            { name: "KINGS CROSS STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
+            { name: "MARYLEBONE STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
+            { name: "FENCHURCH ST STN", type: "station", color: "#333", price: 200, ownerIndex: 0 },
+            { name: "LIVERPOOL ST STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
+            { name: "ELECTRIC COMPANY", type: "utility", color: "#FFF", price: 150, ownerIndex: -1 },
+            { name: "WATER WORKS", type: "utility", color: "#FFF", price: 150, ownerIndex: 1 }
+        ];
+
+        // ==========================================
+        // WEB BLUETOOTH CONNECTION & PARSER
+        // ==========================================
+        
+        // Exact UUIDs from ARDUINO_CODE_FULL.txt
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-        const CHAR_UUID    = "19b10001-e8f2-537e-4f6c-d104768a1214";
+        const CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
+        
+        let myBleDevice;
+        let myBleCharacteristic;
 
-        let bleDevice = null, bleChar = null;
+        document.getElementById('bleConnectBtn').addEventListener('click', async () => {
+            try {
+                console.log('Requesting Bluetooth Device...');
+                myBleDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ name: 'Monopoly_ESP32' }], 
+                    optionalServices: [SERVICE_UUID]
+                });
 
-        const STATE_MAP = [
-            "STANDBY", "BUY_WAIT_PROPERTY", "BUY_WAIT_PLAYER", 
-            "RENT_WAIT_SECOND", "UTILITY_ROLL", "UPGRADE_WAIT_PROPERTY", 
-            "UPGRADE_SELECT", "MORTGAGE_WAIT_PROPERTY", "MORTGAGE_LIQUIDATE", 
-            "MORTGAGE_CONFIRM", "DEBT_COLLECTION", "DEBT_PARDON", 
-            "DEBT_TRADE", "OFF"
-        ];
+                myBleDevice.addEventListener('gattserverdisconnected', onDisconnected);
 
-        const propertyNames = [
-            {n:"Old Kent Road", c:0}, {n:"Whitechapel Road", c:0}, {n:"The Angel Islington", c:1}, {n:"Euston Road", c:1}, {n:"Pentonville Road", c:1},
-            {n:"Pall Mall", c:2}, {n:"Whitehall", c:2}, {n:"Northumberland Ave", c:2}, {n:"Bow Street", c:3}, {n:"Marlborough Street", c:3},
-            {n:"Vine Street", c:3}, {n:"Strand", c:4}, {n:"Fleet Street", c:4}, {n:"Trafalgar Square", c:4}, {n:"Leicester Square", c:5},
-            {n:"Coventry Street", c:5}, {n:"Piccadilly", c:5}, {n:"Regent Street", c:6}, {n:"Oxford Street", c:6}, {n:"Bond Street", c:6},
-            {n:"Park Lane", c:7}, {n:"Mayfair", c:7}, {n:"Kings Cross Stn", c:8}, {n:"Marylebone Stn", c:8}, {n:"Fenchurch St Stn", c:8},
-            {n:"Liverpool St Stn", c:8}, {n:"Electric Company", c:9}, {n:"Water Works", c:9}
-        ];
+                console.log('Connecting to GATT Server...');
+                const server = await myBleDevice.gatt.connect();
 
-        function buildInitialDOM() {
-            const container = document.getElementById("propsContainer");
-            container.innerHTML = propertyNames.map((p, i) => `
-                <div class="property-row" id="prop-${i}">
-                    <div class="property-color-bar c-${p.c}"></div>
-                    <div class="property-details">
-                        <div class="prop-name">${p.n}</div>
-                        <div class="prop-meta">
-                            <span id="owner-${i}">Own: Bank</span>
-                            <span id="houses-${i}">Houses: 0 | <small>Rent: $0</small></span>
+                console.log('Getting Service...');
+                const service = await server.getPrimaryService(SERVICE_UUID);
+
+                console.log('Getting Characteristic...');
+                myBleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+
+                await myBleCharacteristic.startNotifications();
+                myBleCharacteristic.addEventListener('characteristicvaluechanged', handleBLEData);
+
+                // Update UI upon successful connection
+                document.getElementById('statusDot').classList.remove('status-disconnected');
+                document.getElementById('statusDot').classList.add('status-connected');
+                document.getElementById('statusText').innerText = "Connected to ESP32";
+                document.getElementById('bleConnectBtn').innerText = "ESP32 Synced";
+
+            } catch (error) {
+                console.error("Bluetooth Connection Error:", error);
+                alert("Bluetooth Connection Failed. Make sure your ESP32 is on and pairing.");
+            }
+        });
+
+        function onDisconnected() {
+            document.getElementById('statusDot').classList.remove('status-connected');
+            document.getElementById('statusDot').classList.add('status-disconnected');
+            document.getElementById('statusText').innerText = "Disconnected";
+            document.getElementById('bleConnectBtn').innerText = "Reconnect ESP32";
+        }
+
+        function handleBLEData(event) {
+            const value = event.target.value;
+            const decoder = new TextDecoder('utf-8');
+            const jsonString = decoder.decode(value);
+            
+            try {
+                const esp32Data = JSON.parse(jsonString);
+                
+                // Expecting JSON structure from ESP32:
+                // { "bal": [1500, 1000, 1200, 1850], "own": [-1, 0, -1...], "hs": [0, 1, 0...] }
+                
+                if(esp32Data.bal) {
+                    esp32Data.bal.forEach((balance, index) => {
+                        if(playersDatabase[index]) playersDatabase[index].balance = balance;
+                    });
+                }
+                
+                if(esp32Data.own && esp32Data.hs) {
+                    esp32Data.own.forEach((ownerId, index) => {
+                        if(propertiesDatabase[index]) {
+                            propertiesDatabase[index].ownerIndex = ownerId;        // Updates Owner Banner
+                            propertiesDatabase[index].housesOwned = esp32Data.hs[index]; // Updates Yellow Highlight
+                        }
+                    });
+                }
+                
+                // Re-render UI with new data automatically
+                renderDashboardPlayers();
+                renderProperties();
+
+            } catch(e) {
+                console.error("Failed to parse incoming BLE JSON string:", e);
+            }
+        }
+
+
+        // ==========================================
+        // RENDERERS
+        // ==========================================
+        function getOwnerDetails(index) {
+            if (index === 0) return { name: "Player 1", css: "owner-p1" };
+            if (index === 1) return { name: "Player 2", css: "owner-p2" };
+            if (index === 2) return { name: "Player 3", css: "owner-p3" };
+            if (index === 3) return { name: "Player 4", css: "owner-p4" };
+            return { name: "Bank", css: "owner-bank" };
+        }
+
+        function renderDashboardPlayers() {
+            const container = document.getElementById('dashboard-players');
+            container.innerHTML = '';
+            playersDatabase.forEach(player => {
+                const playerCard = `
+                    <div class="dashboard-player-card">
+                        <div class="dashboard-player-name amasis-font">${player.name}</div>
+                        <div class="dashboard-player-balance amasis-font">
+                            $${player.balance}
+                            <div>
+                                <div class="dashboard-player-time">${player.time}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.innerHTML += playerCard;
+            });
         }
 
-        function logger(msg) { 
-            const term = document.getElementById("terminalOut");
-            term.innerText = `> ${msg}\n` + term.innerText; 
-        }
+        function createCardHTML(prop) {
+            const mortgageValue = Math.floor(prop.price / 2);
+            const unmortgageValue = mortgageValue + Math.floor((mortgageValue + 9) / 10);
+            const owner = getOwnerDetails(prop.ownerIndex);
+            const isDarkHeader = ["#00008B", "#8B4513", "#008000", "#333"].includes(prop.color);
+            const textColor = isDarkHeader ? 'white' : 'black';
 
-        async function toggleBLEConnection() {
-            if (bleDevice && bleDevice.gatt.connected) { 
-                bleDevice.gatt.disconnect(); 
-                return; 
-            }
-            try {
-                logger("Requesting device matching UUID...");
-                bleDevice = await navigator.bluetooth.requestDevice({ 
-                    filters: [{ services: [SERVICE_UUID] }]
-                });
-                
-                bleDevice.addEventListener('gattserverdisconnected', handleDisconnect);
-                logger("Opening secure client pairing stream...");
-                
-                const server = await bleDevice.gatt.connect();
-                const service = await server.getPrimaryService(SERVICE_UUID);
-                bleChar = await service.getCharacteristic(CHAR_UUID);
+            let innerBodyHTML = '';
 
-                await bleChar.startNotifications();
-                bleChar.addEventListener('characteristicvaluechanged', handleIncomingData);
+            if (prop.type === "street") {
+                const hlRent = prop.housesOwned === 0 ? 'highlight' : '';
+                const hlH1 = prop.housesOwned === 1 ? 'highlight' : '';
+                const hlH2 = prop.housesOwned === 2 ? 'highlight' : '';
+                const hlH3 = prop.housesOwned === 3 ? 'highlight' : '';
+                const hlH4 = prop.housesOwned === 4 ? 'highlight' : '';
+                const hlHotel = prop.housesOwned === 5 ? 'highlight' : '';
 
-                // Force initial sync
-                sendMonopolyCommand('CMD_SYNC');
-
-                document.getElementById("statusDot").classList.add("connected");
-                document.getElementById("statusText").innerText = "Connected";
-                document.getElementById("mainConnectBtn").innerText = "Disconnect Link";
-                logger("Connected! Awaiting data updates...");
-            } catch (err) { 
-                logger(`Connection Error: ${err.message}`); 
-                handleDisconnect(); 
-            }
-        }
-
-        function handleDisconnect() {
-            document.getElementById("statusDot").classList.remove("connected");
-            document.getElementById("statusText").innerText = "Disconnected";
-            document.getElementById("mainConnectBtn").innerText = "Connect Link";
-            bleChar = null; 
-            bleDevice = null; 
-            logger("BLE connection dropped.");
-        }
-
-        function handleIncomingData(event) {
-            const rawDecoder = new TextDecoder('utf-8');
-            const streamString = rawDecoder.decode(event.target.value).trim();
-            
-            if (streamString.startsWith("{") && streamString.endsWith("}")) {
-                try {
-                    const gameData = JSON.parse(streamString);
-                    
-                    document.getElementById('p1-bal').innerText = "$" + gameData.p1;
-                    document.getElementById('p2-bal').innerText = "$" + gameData.p2;
-                    document.getElementById('debt-amt').innerText = "$" + gameData.d;
-                    
-                    if (gameData.p) {
-                        gameData.p.forEach((prop, i) => {
-                            const ownerEl = document.getElementById(`owner-${i}`);
-                            const houseEl = document.getElementById(`houses-${i}`);
-            
-                            const o = prop[0];
-                            const h = prop[1];
-                            const r = prop[2];
-
-                            ownerEl.innerText = (o === -1) ? "Own: Bank" : `Own: P${o + 1}`;
-                            houseEl.innerHTML = `Houses: ${h} | <small>Rent: $${r}</small>`;
-                        });
-                    }
-                    
-                    const stateIdx = parseInt(gameData.s);
-                    if (stateIdx >= 0 && stateIdx < STATE_MAP.length) {
-                        document.getElementById('state-id').innerText = STATE_MAP[stateIdx];
-                    } else {
-                        document.getElementById('state-id').innerText = "UNKNOWN (" + stateIdx + ")";
-                    }
-                } catch (jsonErr) {
-                    console.error("JSON Error:", jsonErr);
+                innerBodyHTML = `
+                    <div class="rent-row ${hlRent}"><span>Rent</span> <b>$${prop.r0}</b></div>
+                    <div class="rent-row ${hlH1}"><span>With 1 House</span> <b>$${prop.r1}</b></div>
+                    <div class="rent-row ${hlH2}"><span>With 2 Houses</span> <b>$${prop.r2}</b></div>
+                    <div class="rent-row ${hlH3}"><span>With 3 Houses</span> <b>$${prop.r3}</b></div>
+                    <div class="rent-row ${hlH4}"><span>With 4 Houses</span> <b>$${prop.r4}</b></div>
+                    <div class="rent-row ${hlHotel}"><span>With HOTEL</span> <b>$${prop.r5}</b></div>
+                    <div class="card-footer">
+                        <div>Mortg. $${mortgageValue} / Unmortg. $${unmortgageValue}</div>
+                        <div>Houses $${prop.houseCost} each</div>
+                    </div>
+                `;
+            } else if (prop.type === "station") {
+                innerBodyHTML = `
+                    <br>
+                    <div class="rent-row"><span>Rent</span> <b>$25</b></div>
+                    <div class="rent-row"><span>2 stations</span> <b>$50</b></div>
+                    <div class="rent-row"><span>3 stations</span> <b>$100</b></div>
+                    <div class="rent-row"><span>4 stations</span> <b>$200</b></div>
+                    <div class="card-footer">
+                        <div>Mortg. $${mortgageValue} / Unmortg. $${unmortgageValue}</div>
+                    </div>
+                `;
+            } else if (prop.type === "utility") {
+                let utilityIcon = '';
+                if (prop.name === "ELECTRIC COMPANY") {
+                    utilityIcon = `
+                    <div style="margin: 10px 0; text-align: center;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6"></path><path d="M10 22h4"></path>
+                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.5.5 2.5 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                        </svg>
+                    </div>`;
+                } else if (prop.name === "WATER WORKS") {
+                    utilityIcon = `
+                    <div style="margin: 10px 0; text-align: center;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 8h12a2 2 0 0 1 2 2v2"></path><path d="M12 8V5h3"></path>
+                            <path d="M19 15v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3"></path><path d="M17 22v.01"></path>
+                        </svg>
+                    </div>`;
                 }
+
+                innerBodyHTML = `
+                    ${utilityIcon}
+                    <div style="padding: 10px; text-align: left; flex-grow: 1;">
+                        1 Utility = <b>4x</b> dice roll.<br><br>
+                        2 Utilities = <b>10x</b> dice roll.
+                    </div>
+                    <div class="card-footer">
+                        <div>Mortg. $${mortgageValue} / Unmortg. $${unmortgageValue}</div>
+                    </div>
+                `;
             }
+
+            return `
+                <div class="property-card">
+                    <div class="card-header" style="background-color: ${prop.color}; color: ${textColor}; border-bottom: ${prop.type === 'utility' ? '2px solid black' : 'none'};">
+                        ${prop.type === 'street' ? '<span class="amasis-font" style="font-size: 0.6rem;">TITLE DEED</span>' : ''}
+                        <h3 class="amasis-font">${prop.name}</h3>
+                    </div>
+                    <div class="card-body">
+                        ${innerBodyHTML}
+                    </div>
+                    <div class="owner-banner amasis-font ${owner.css}">
+                        OWNER: ${owner.name}
+                    </div>
+                </div>
+            `;
         }
 
-        async function sendMonopolyCommand(payload) {
-            if (!bleChar) return;
-            try { 
-                await bleChar.writeValueWithoutResponse(new TextEncoder().encode(payload.trim()));
-                logger(`Dispatched token: ${payload}`);
-            } catch (err) { 
-                logger(`Command failed: ${err.message}`); 
+        function chunkArray(array, size) {
+            const result = [];
+            for (let i = 0; i < array.length; i += size) {
+                result.push(array.slice(i, i + size));
             }
+            return result;
         }
 
-        // Initialize the DOM immediately on load
-        buildInitialDOM();
+        function renderProperties() {
+            const grid = document.getElementById('properties-grid');
+            grid.innerHTML = '';
+            propertiesDatabase.forEach(prop => {
+                grid.innerHTML += createCardHTML(prop);
+            });
+
+            const scrollContainer = document.getElementById('properties-scroll');
+            scrollContainer.innerHTML = '';
+
+            const groups = {
+                "-1": { title: "The Bank", props: [] },
+                "0": { title: "Player 1", props: [] },
+                "1": { title: "Player 2", props: [] },
+                "2": { title: "Player 3", props: [] },
+                "3": { title: "Player 4", props: [] }
+            };
+
+            propertiesDatabase.forEach(prop => {
+                if (groups[prop.ownerIndex]) {
+                    groups[prop.ownerIndex].props.push(prop);
+                }
+            });
+
+            Object.keys(groups).sort().forEach(ownerId => {
+                const group = groups[ownerId];
+                if (group.props.length === 0) return; 
+
+                const chunks = chunkArray(group.props, 4);
+                let pagesHTML = '';
+                chunks.forEach(chunk => {
+                    let cardsHTML = '';
+                    chunk.forEach(prop => {
+                        cardsHTML += createCardHTML(prop);
+                    });
+                    pagesHTML += `<div class="grid-page">${cardsHTML}</div>`;
+                });
+
+                const sectionHTML = `
+                    <div class="owner-section">
+                        <h3 class="owner-title amasis-font">${group.title}</h3>
+                        <div class="horizontal-scroll-container">
+                            ${pagesHTML}
+                        </div>
+                    </div>
+                `;
+                scrollContainer.innerHTML += sectionHTML;
+            });
+        }
+
+        window.onload = () => {
+            renderProperties();
+            renderDashboardPlayers();
+        };
     </script>
 </body>
 </html>
