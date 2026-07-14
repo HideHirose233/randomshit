@@ -9,372 +9,82 @@
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
         /* --- GLOBAL STYLES --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #ce1126; /* Monopoly Red */
-            color: white;
-            min-height: 100vh;
-        }
-
-        b, strong, h1, h2, h3, .amasis-font {
-            font-family: 'Amasis MT Pro', 'Times New Roman', serif;
-            font-weight: bold;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Arial', sans-serif; background-color: #ce1126; color: white; min-height: 100vh; }
+        b, strong, h1, h2, h3, .amasis-font { font-family: 'Amasis MT Pro', 'Times New Roman', serif; font-weight: bold; }
+        .hidden { display: none !important; }
 
         /* --- DASHBOARD PAGE --- */
-        #dashboard-page {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-        }
+        #dashboard-page { display: flex; flex-direction: column; align-items: center; padding: 20px; text-align: center; }
+        .monopoly-title { font-size: 3.5rem; letter-spacing: 2px; margin-top: 10px; text-transform: uppercase; border: 4px solid white; padding: 10px 20px; background-color: #ce1126; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
+        .dashboard-subtitle { font-size: 1.5rem; margin-top: 10px; margin-bottom: 15px; letter-spacing: 5px; text-transform: uppercase; }
 
-        .monopoly-title {
-            font-size: 3.5rem;
-            letter-spacing: 2px;
-            margin-top: 20px;
-            text-transform: uppercase;
-            border: 4px solid white;
-            padding: 10px 20px;
-            background-color: #ce1126;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
-        }
+        /* --- ROLE SELECTOR --- */
+        .role-selector { background: white; color: black; padding: 15px; border-radius: 10px; border: 3px solid black; margin-bottom: 20px; box-shadow: 4px 4px 0 rgba(0,0,0,0.4); }
+        .role-btn { padding: 10px 20px; margin: 5px; font-size: 1rem; border: 2px solid black; cursor: pointer; border-radius: 5px; background: #eee; font-weight: bold; }
+        .role-btn.active { background: #ce1126; color: white; }
 
-        .dashboard-subtitle {
-            font-size: 1.5rem;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
-
-        /* --- BLUETOOTH CONNECTION STYLES --- */
-        .connect-btn {
-            background-color: #000;
-            color: #fff;
-            border: 3px solid #fff;
-            padding: 10px 25px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
-            text-transform: uppercase;
-        }
-
-        .connect-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-        }
-
-        .status-container {
-            margin-bottom: 25px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px 25px;
-            border-radius: 20px;
-            font-size: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            font-family: 'Arial', sans-serif;
-            transition: all 0.3s ease;
-        }
-
+        /* --- STATUS BANNERS --- */
+        .connect-btn { background-color: #000; color: #fff; border: 3px solid #fff; padding: 10px 25px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; margin-bottom: 15px; box-shadow: 4px 4px 0 rgba(0,0,0,0.4); text-transform: uppercase; }
+        .connect-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 rgba(0,0,0,0.4); }
+        .status-container { margin-bottom: 25px; background: rgba(0, 0, 0, 0.2); padding: 10px 25px; border-radius: 20px; font-size: 1rem; border: 2px solid rgba(255, 255, 255, 0.5); font-family: 'Arial', sans-serif; transition: all 0.3s ease; }
         .status-disconnected { color: #ff3333; text-shadow: 0 0 5px #ff3333; }
         .status-connected { color: #32cd32; text-shadow: 0 0 5px #32cd32; }
+        .status-cloud { color: #00bfff; text-shadow: 0 0 5px #00bfff; } 
 
         /* --- DASHBOARD PLAYERS LIST --- */
-        #dashboard-players {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 30px;
-        }
+        #dashboard-players { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 500px; margin-bottom: 30px; }
+        .dashboard-player-card { background-color: #f4f0ec; color: black; border: 3px solid black; border-radius: 10px; padding: 15px 10px; text-align: center; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
+        .dashboard-player-name { font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; }
+        .dashboard-player-balance { color: #2e8b57; font-size: 1.4rem; }
+        .dashboard-player-time { font-family: 'Share Tech Mono', monospace; font-size: 1.2rem; color: #ff3333; background-color: #111; border: 2px solid #000; border-radius: 5px; padding: 3px 12px; display: inline-block; margin-top: 8px; box-shadow: inset 0px 0px 6px rgba(0,0,0,0.8); letter-spacing: 2px; text-shadow: 0 0 4px rgba(255, 51, 51, 0.5); }
 
-        .dashboard-player-card {
-            background-color: #f4f0ec;
-            color: black;
-            border: 3px solid black;
-            border-radius: 10px;
-            padding: 15px 10px;
-            text-align: center;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
-        }
-
-        .dashboard-player-name {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .dashboard-player-balance {
-            color: #2e8b57;
-            font-size: 1.4rem;
-        }
-
-        /* DIGITAL CLOCK STYLING */
-        .dashboard-player-time {
-            font-family: 'Share Tech Mono', monospace; 
-            font-size: 1.2rem;
-            color: #ff3333; 
-            background-color: #111; 
-            border: 2px solid #000;
-            border-radius: 5px;
-            padding: 3px 12px;
-            display: inline-block;
-            margin-top: 8px;
-            box-shadow: inset 0px 0px 6px rgba(0,0,0,0.8);
-            letter-spacing: 2px;
-            text-shadow: 0 0 4px rgba(255, 51, 51, 0.5); 
-        }
-
-        /* --- DASHBOARD MENU BUTTONS --- */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .menu-btn {
-            background-color: #f4f0ec; 
-            color: #ce1126;
-            border: 4px solid black; 
-            border-radius: 15px;
-            aspect-ratio: 1 / 1;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 6px 0px black; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
-
-        .menu-btn:first-child {
-            grid-column: span 2;
-            aspect-ratio: auto;
-            padding: 30px;
-        }
-
-        .menu-btn:active {
-            transform: translateY(6px);
-            box-shadow: 0 0px 0px black;
-        }
-
+        /* --- MENU BUTTONS --- */
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
+        .menu-btn { background-color: #f4f0ec; color: #ce1126; border: 4px solid black; border-radius: 15px; aspect-ratio: 1 / 1; font-size: 1.2rem; cursor: pointer; box-shadow: 0 6px 0px black; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, box-shadow 0.1s; }
+        .menu-btn:first-child { grid-column: span 2; aspect-ratio: auto; padding: 30px; }
+        .menu-btn:active { transform: translateY(6px); box-shadow: 0 0px 0px black; }
         .menu-icon { font-size: 3rem; margin-bottom: 10px; }
 
+        /* --- LIVE DATA LOG (FOR DEBUGGING) --- */
+        #debugLog { width: 100%; max-width: 500px; background: #111; color: #0f0; font-family: monospace; font-size: 0.8rem; padding: 10px; border-radius: 5px; margin-top: 20px; white-space: pre-wrap; word-wrap: break-word; text-align: left; max-height: 120px; overflow-y: auto; border: 2px solid #555; }
+
         /* --- SUB-PAGES GENERAL STYLES --- */
-        .page {
-            padding: 20px;
-            background-color: #e8e4d9; 
-            color: black;
-            min-height: 100vh;
-        }
-
-        .header-bar {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            background-color: #ce1126;
-            color: white;
-            border: 2px solid black; 
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 black;
-        }
-        
-        .back-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0 0 0 black;
-        }
-
-        .page-title {
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            flex-grow: 1;
-        }
-
-        /* --- VIEW TOGGLES --- */
+        .page { padding: 20px; background-color: #e8e4d9; color: black; min-height: 100vh; }
+        .header-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .back-btn { background-color: #ce1126; color: white; border: 2px solid black; padding: 10px 20px; font-size: 1rem; border-radius: 5px; cursor: pointer; box-shadow: 2px 2px 0 black; }
+        .back-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 black; }
+        .page-title { font-size: 1.8rem; text-transform: uppercase; flex-grow: 1; }
         .view-toggles { display: flex; gap: 10px; }
+        .toggle-btn { background-color: #ccc; color: #333; border: 2px solid #000; padding: 8px 12px; font-family: 'Arial', sans-serif; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .toggle-btn.active { background-color: #2e8b57; color: white; }
 
-        .toggle-btn {
-            background-color: #ccc;
-            color: #333;
-            border: 2px solid #000;
-            padding: 8px 12px;
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .toggle-btn.active {
-            background-color: #2e8b57;
-            color: white;
-        }
-
-        /* --- PROPERTIES (CARDS) --- */
-        .property-card {
-            background-color: #f4f0ec; 
-            border: 2px solid black;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
-            font-size: 0.8rem;
-            min-height: 320px;
-        }
-
-        .card-header {
-            border: 2px solid black;
-            margin: 4px;
-            padding: 10px 2px;
-            text-transform: uppercase;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
+        /* --- PROPERTIES (CARDS & LAYOUTS) --- */
+        .property-card { background-color: #f4f0ec; border: 2px solid black; display: flex; flex-direction: column; text-align: center; box-shadow: 3px 3px 8px rgba(0,0,0,0.2); font-size: 0.8rem; min-height: 320px; }
+        .card-header { border: 2px solid black; margin: 4px; padding: 10px 2px; text-transform: uppercase; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
         .card-header h3 { font-size: 0.8rem; margin: 0; }
-
-        .card-body {
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            flex-grow: 1;
-        }
-
-        .rent-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 4px;
-        }
-
-        .rent-row.highlight {
-            border: 2px solid #ffcc00;
-            background-color: rgba(255, 204, 0, 0.4);
-            border-radius: 3px;
-        }
-        
+        .card-body { padding: 8px; display: flex; flex-direction: column; gap: 3px; flex-grow: 1; }
+        .rent-row { display: flex; justify-content: space-between; padding: 2px 4px; }
+        .rent-row.highlight { border: 2px solid #ffcc00; background-color: rgba(255, 204, 0, 0.4); border-radius: 3px; }
         .rent-row.highlight b { color: black; }
-
-        .card-footer {
-            margin-top: auto;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-            font-size: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            padding-bottom: 5px;
-        }
-        
-        .owner-banner {
-            padding: 8px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            border-top: 2px solid black;
-        }
-
+        .card-footer { margin-top: auto; border-top: 1px solid #ccc; padding-top: 5px; font-size: 0.75rem; display: flex; flex-direction: column; gap: 3px; padding-bottom: 5px; }
+        .owner-banner { padding: 8px; font-size: 0.9rem; text-transform: uppercase; border-top: 2px solid black; }
         .owner-bank { background-color: #e0e0e0; color: #555; }
         .owner-p1 { background-color: #cce5ff; color: #004085; }
         .owner-p2 { background-color: #d4edda; color: #155724; }
         .owner-p3 { background-color: #fff3cd; color: #856404; }
         .owner-p4 { background-color: #f8d7da; color: #721c24; }
 
-        /* --- PROPERTIES (GRID VIEW DEFAULT) --- */
-        #properties-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        #properties-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { #properties-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        @media (min-width: 768px) {
-            #properties-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-
-        /* --- PROPERTIES (HORIZONTAL SCROLL VIEW) --- */
-        #properties-scroll {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .owner-section {
-            margin-bottom: 30px;
-            background-color: #f4f0ec; 
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 2px solid #000;
-        }
-
-        .owner-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            border-bottom: 3px solid #ce1126;
-            padding-bottom: 5px;
-            display: inline-block;
-        }
-
-        .horizontal-scroll-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px; 
-            padding-bottom: 10px;
-            scroll-snap-type: x mandatory; 
-            -ms-overflow-style: none;  
-            scrollbar-width: none;  
-        }
-
+        #properties-scroll { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .owner-section { margin-bottom: 30px; background-color: #f4f0ec; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 2px solid #000; }
+        .owner-title { font-size: 1.5rem; margin-bottom: 15px; text-transform: uppercase; border-bottom: 3px solid #ce1126; padding-bottom: 5px; display: inline-block; }
+        .horizontal-scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scroll-snap-type: x mandatory; -ms-overflow-style: none; scrollbar-width: none; }
         .horizontal-scroll-container::-webkit-scrollbar { display: none; }
-
-        .grid-page {
-            display: grid;
-            grid-template-columns: repeat(2, 150px);
-            grid-template-rows: repeat(2, auto); 
-            justify-content: center;
-            gap: 10px;
-            min-width: 100%; 
-            flex-shrink: 0;
-            scroll-snap-align: center;
-        }
-
-        .grid-page .property-card {
-            width: 150px; 
-            min-width: 150px;
-            max-width: 150px;
-            min-height: 220px;
-            font-size: 0.65rem; 
-        }
-
+        .grid-page { display: grid; grid-template-columns: repeat(2, 150px); grid-template-rows: repeat(2, auto); justify-content: center; gap: 10px; min-width: 100%; flex-shrink: 0; scroll-snap-align: center; }
+        .grid-page .property-card { width: 150px; min-width: 150px; max-width: 150px; min-height: 220px; font-size: 0.65rem; }
         .grid-page .card-header { min-height: 45px; padding: 6px 2px; margin: 2px; }
         .grid-page .card-header span { font-size: 0.55rem !important; }
         .grid-page .card-header h3 { font-size: 0.7rem; }
@@ -383,10 +93,32 @@
         .grid-page .rent-row.highlight { border: 2px solid #ffcc00; }
         .grid-page .card-footer { font-size: 0.55rem; margin-top: 4px; padding-top: 4px; }
         .grid-page .owner-banner { font-size: 0.7rem; padding: 6px; }
-        
         .placeholder-text { text-align: center; padding: 50px; font-size: 1.2rem; color: #666; }
-
     </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAU4vmD-NEtTftzCfzVmFo-xes5CkU9SmU",
+            authDomain: "monopoly-dashboard.firebaseapp.com",
+            databaseURL: "https://monopoly-dashboard-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "monopoly-dashboard",
+            storageBucket: "monopoly-dashboard.firebasestorage.app",
+            messagingSenderId: "648847429681",
+            appId: "1:648847429681:web:25aa710fa3ad8a2a770510",
+            measurementId: "G-T8M9WMXR9M"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        window.firebaseDB = db;
+        window.firebaseSet = set;
+        window.firebaseRef = ref;
+        window.firebaseOnValue = onValue;
+    </script>
 </head>
 <body>
 
@@ -394,10 +126,16 @@
         <h1 class="monopoly-title">MONOPOLY</h1>
         <h2 class="dashboard-subtitle">Dashboard</h2>
 
+        <div class="role-selector">
+            <h3 style="margin-bottom: 10px;">Select Your Role</h3>
+            <button class="role-btn active" id="role-host" onclick="setRole('host')">I am the HOST (Bluetooth)</button>
+            <button class="role-btn" id="role-player" onclick="setRole('player')">I am a PLAYER (WiFi)</button>
+        </div>
+
         <button class="connect-btn amasis-font" id="bleConnectBtn">Connect ESP32</button>
 
         <div class="status-container" id="statusContainer">
-            Status: <span class="status-dot status-disconnected" id="statusDot">●</span> <span id="statusText">Disconnected</span>
+            Status: <span class="status-dot status-disconnected" id="statusDot">●</span> <span id="statusText">Waiting...</span>
         </div>
 
         <div id="dashboard-players"></div>
@@ -416,6 +154,8 @@
                 <b class="amasis-font">About</b>
             </button>
         </div>
+
+        <div id="debugLog">Live Data Stream will appear here...</div>
     </div>
 
     <div id="properties-page" class="page hidden">
@@ -427,9 +167,7 @@
                 <button id="btn-scroll-view" class="toggle-btn" onclick="switchPropertyView('scroll')">Sideway Scroll Mode</button>
             </div>
         </div>
-        
         <div id="properties-grid"></div>
-
         <div id="properties-scroll" class="hidden"></div>
     </div>
 
@@ -448,14 +186,70 @@
         </div>
         <div class="placeholder-text">
             <b>Monopoly ESP32 Project</b><br><br>
-            Hosted on GitHub. Connected via Web Bluetooth.
+            Cloud Synced via Firebase.
         </div>
     </div>
 
     <script>
         // ==========================================
-        // UI NAVIGATION & TOGGLES
+        // ROLE MANAGEMENT & CLOUD SYNC LOGIC
         // ==========================================
+        let isHost = true; 
+
+        function logDebug(message) {
+            const logger = document.getElementById('debugLog');
+            logger.innerText = "⏳ " + new Date().toLocaleTimeString() + "\n" + message;
+        }
+
+        function setRole(role) {
+            const btnHost = document.getElementById('role-host');
+            const btnPlayer = document.getElementById('role-player');
+            const bleBtn = document.getElementById('bleConnectBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            if (role === 'host') {
+                isHost = true;
+                btnHost.classList.add('active');
+                btnPlayer.classList.remove('active');
+                bleBtn.classList.remove('hidden'); 
+                statusDot.className = 'status-dot status-disconnected';
+                statusText.innerText = 'Disconnected (Waiting for ESP32)';
+                logDebug("Switched to Host Mode. Click Connect ESP32.");
+            } else {
+                isHost = false;
+                btnHost.classList.remove('active');
+                btnPlayer.classList.add('active');
+                bleBtn.classList.add('hidden'); 
+                
+                statusDot.className = 'status-dot status-cloud';
+                statusText.innerText = 'Syncing from Cloud...';
+                logDebug("Switched to Player Mode. Waiting for Cloud Data...");
+                startCloudListener();
+            }
+        }
+
+        function uploadToCloud(jsonData) {
+            if (!isHost || !window.firebaseDB) return;
+            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
+            window.firebaseSet(dbRef, JSON.parse(jsonData)).catch(e => console.error("Cloud Upload Failed:", e));
+        }
+
+        let isListening = false;
+        function startCloudListener() {
+            if (isListening || !window.firebaseDB) return;
+            isListening = true;
+            
+            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
+            window.firebaseOnValue(dbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data && !isHost) {
+                    parseIncomingData(JSON.stringify(data)); 
+                    document.getElementById('statusText').innerText = 'Synced with Cloud ✅';
+                }
+            });
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page, #dashboard-page').forEach(el => el.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
@@ -468,40 +262,36 @@
             const btnScroll = document.getElementById('btn-scroll-view');
 
             if (view === 'grid') {
-                gridView.classList.remove('hidden');
-                scrollView.classList.add('hidden');
-                btnGrid.classList.add('active');
-                btnScroll.classList.remove('active');
+                gridView.classList.remove('hidden'); scrollView.classList.add('hidden');
+                btnGrid.classList.add('active'); btnScroll.classList.remove('active');
             } else {
-                gridView.classList.add('hidden');
-                scrollView.classList.remove('hidden');
-                btnGrid.classList.remove('active');
-                btnScroll.classList.add('active');
+                gridView.classList.add('hidden'); scrollView.classList.remove('hidden');
+                btnGrid.classList.remove('active'); btnScroll.classList.add('active');
             }
         }
 
         // ==========================================
-        // DATA ARRAYS (Tied to ESP32 State)
+        // DATA ARRAYS
         // ==========================================
         let playersDatabase = [
             { id: 1, name: "Player 1 (Erl)", balance: 1500, time: "10:00" },
-            { id: 2, name: "Player 2", balance: 1000, time: "10:00" },
-            { id: 3, name: "Player 3", balance: 1200, time: "10:00" },
-            { id: 4, name: "Player 4", balance: 1850, time: "10:00" }
+            { id: 2, name: "Player 2", balance: 1500, time: "10:00" },
+            { id: 3, name: "Player 3", balance: 1500, time: "10:00" },
+            { id: 4, name: "Player 4", balance: 1500, time: "10:00" }
         ];
 
         let propertiesDatabase = [
             { name: "OLD KENT ROAD", type: "street", color: "#8B4513", price: 60, r0: 2, r1: 10, r2: 30, r3: 90, r4: 160, r5: 250, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
-            { name: "WHITECHAPEL ROAD", type: "street", color: "#8B4513", price: 60, r0: 4, r1: 20, r2: 60, r3: 180, r4: 320, r5: 450, houseCost: 50, housesOwned: 1, ownerIndex: 0 },
+            { name: "WHITECHAPEL ROAD", type: "street", color: "#8B4513", price: 60, r0: 4, r1: 20, r2: 60, r3: 180, r4: 320, r5: 450, houseCost: 50, housesOwned: 1, ownerIndex: -1 },
             { name: "THE ANGEL ISLINGTON", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
             { name: "EUSTON ROAD", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
-            { name: "PENTONVILLE ROAD", type: "street", color: "#87CEEB", price: 120, r0: 8, r1: 40, r2: 100, r3: 300, r4: 450, r5: 600, houseCost: 50, housesOwned: 2, ownerIndex: 1 },
+            { name: "PENTONVILLE ROAD", type: "street", color: "#87CEEB", price: 120, r0: 8, r1: 40, r2: 100, r3: 300, r4: 450, r5: 600, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
             { name: "PALL MALL", type: "street", color: "#FF1493", price: 140, r0: 10, r1: 50, r2: 150, r3: 450, r4: 625, r5: 750, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
             { name: "WHITEHALL", type: "street", color: "#FF1493", price: 140, r0: 10, r1: 50, r2: 150, r3: 450, r4: 625, r5: 750, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
             { name: "NORTHUMBERLAND AVE", type: "street", color: "#FF1493", price: 160, r0: 12, r1: 60, r2: 180, r3: 500, r4: 700, r5: 900, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
             { name: "BOW STREET", type: "street", color: "#FF8C00", price: 180, r0: 14, r1: 70, r2: 200, r3: 550, r4: 750, r5: 950, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
             { name: "MARLBOROUGH STREET", type: "street", color: "#FF8C00", price: 180, r0: 14, r1: 70, r2: 200, r3: 550, r4: 750, r5: 950, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
-            { name: "VINE STREET", type: "street", color: "#FF8C00", price: 200, r0: 16, r1: 80, r2: 220, r3: 600, r4: 800, r5: 1000, houseCost: 100, housesOwned: 5, ownerIndex: 0 },
+            { name: "VINE STREET", type: "street", color: "#FF8C00", price: 200, r0: 16, r1: 80, r2: 220, r3: 600, r4: 800, r5: 1000, houseCost: 100, housesOwned: 0, ownerIndex: -1 },
             { name: "STRAND", type: "street", color: "#FF0000", price: 220, r0: 18, r1: 90, r2: 250, r3: 700, r4: 875, r5: 1050, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
             { name: "FLEET STREET", type: "street", color: "#FF0000", price: 220, r0: 18, r1: 90, r2: 250, r3: 700, r4: 875, r5: 1050, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
             { name: "TRAFALGAR SQUARE", type: "street", color: "#FF0000", price: 240, r0: 20, r1: 100, r2: 300, r3: 750, r4: 925, r5: 1100, houseCost: 150, housesOwned: 0, ownerIndex: -1 },
@@ -515,103 +305,153 @@
             { name: "MAYFAIR", type: "street", color: "#00008B", price: 400, r0: 50, r1: 200, r2: 600, r3: 1400, r4: 1700, r5: 2000, houseCost: 200, housesOwned: 0, ownerIndex: -1 },
             { name: "KINGS CROSS STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
             { name: "MARYLEBONE STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
-            { name: "FENCHURCH ST STN", type: "station", color: "#333", price: 200, ownerIndex: 0 },
+            { name: "FENCHURCH ST STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
             { name: "LIVERPOOL ST STN", type: "station", color: "#333", price: 200, ownerIndex: -1 },
             { name: "ELECTRIC COMPANY", type: "utility", color: "#FFF", price: 150, ownerIndex: -1 },
-            { name: "WATER WORKS", type: "utility", color: "#FFF", price: 150, ownerIndex: 1 }
+            { name: "WATER WORKS", type: "utility", color: "#FFF", price: 150, ownerIndex: -1 }
         ];
 
         // ==========================================
-        // WEB BLUETOOTH CONNECTION & PARSER
+        // WEB BLUETOOTH (HOST ONLY) w/ MTU BYPASS
         // ==========================================
-        
-        // Exact UUIDs from ARDUINO_CODE_FULL.txt
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
         const CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
-        
-        let myBleDevice;
-        let myBleCharacteristic;
+        let myBleDevice, myBleCharacteristic;
 
         document.getElementById('bleConnectBtn').addEventListener('click', async () => {
+            if(!isHost) return;
+
             try {
-                console.log('Requesting Bluetooth Device...');
-                myBleDevice = await navigator.bluetooth.requestDevice({
-                    filters: [{ name: 'Monopoly_ESP32' }], 
-                    optionalServices: [SERVICE_UUID]
+                document.getElementById('statusText').innerText = "Searching...";
+                logDebug("Asking Windows for permission to scan...");
+
+                if (myBleDevice && myBleDevice.gatt && !myBleDevice.gatt.connected) {
+                    logDebug('Reconnecting to previously paired device...');
+                    await executeBLEConnection();
+                    return;
+                }
+
+                myBleDevice = await navigator.bluetooth.requestDevice({ 
+                    acceptAllDevices: true, 
+                    optionalServices: [SERVICE_UUID] 
                 });
-
+                
                 myBleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-
-                console.log('Connecting to GATT Server...');
-                const server = await myBleDevice.gatt.connect();
-
-                console.log('Getting Service...');
-                const service = await server.getPrimaryService(SERVICE_UUID);
-
-                console.log('Getting Characteristic...');
-                myBleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
-
-                await myBleCharacteristic.startNotifications();
-                myBleCharacteristic.addEventListener('characteristicvaluechanged', handleBLEData);
-
-                // Update UI upon successful connection
-                document.getElementById('statusDot').classList.remove('status-disconnected');
-                document.getElementById('statusDot').classList.add('status-connected');
-                document.getElementById('statusText').innerText = "Connected to ESP32";
-                document.getElementById('bleConnectBtn').innerText = "ESP32 Synced";
+                await executeBLEConnection();
 
             } catch (error) {
-                console.error("Bluetooth Connection Error:", error);
-                alert("Bluetooth Connection Failed. Make sure your ESP32 is on and pairing.");
+                console.error("BLE Error:", error);
+                document.getElementById('statusText').innerText = "Connection Failed";
+                logDebug("Error: " + error.message);
             }
         });
 
-        function onDisconnected() {
-            document.getElementById('statusDot').classList.remove('status-connected');
-            document.getElementById('statusDot').classList.add('status-disconnected');
-            document.getElementById('statusText').innerText = "Disconnected";
-            document.getElementById('bleConnectBtn').innerText = "Reconnect ESP32";
+        // The Forceful "Long Read" Function to Bypass MTU Truncation
+        async function fetchFullDataFromESP32() {
+            try {
+                logDebug("Forcing Long Read from ESP32 Memory...");
+                const value = await myBleCharacteristic.readValue();
+                const decoder = new TextDecoder('utf-8');
+                const rawJson = decoder.decode(value).replace(/\0/g, '').trim();
+                
+                if (rawJson.startsWith('{') && rawJson.endsWith('}')) {
+                    logDebug("✅ SUCCESS! Full Data Downloaded:\n" + rawJson);
+                    parseIncomingData(rawJson); 
+                    uploadToCloud(rawJson);     
+                } else if (rawJson.length > 0) {
+                    logDebug("⚠️ WARNING: Data is corrupted/cut off:\n" + rawJson);
+                } else {
+                    logDebug("ℹ️ Data is completely empty. Waiting for ESP32 to save a game state...");
+                }
+            } catch (error) {
+                logDebug("❌ Read failed. " + error.message);
+            }
         }
 
-        function handleBLEData(event) {
-            const value = event.target.value;
-            const decoder = new TextDecoder('utf-8');
-            const jsonString = decoder.decode(value);
+        async function executeBLEConnection() {
+            document.getElementById('statusText').innerText = "Connecting to Server...";
+            const server = await myBleDevice.gatt.connect();
             
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            document.getElementById('statusText').innerText = "Getting Services...";
+            const service = await server.getPrimaryService(SERVICE_UUID);
+            myBleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+
+            document.getElementById('statusText').innerText = "Syncing Data...";
+
+            // 1. Force the first read
+            await fetchFullDataFromESP32();
+
+            // 2. Listen for "Pings" from the ESP32 to force new reads
+            await myBleCharacteristic.startNotifications();
+            
+            let isReading = false;
+            myBleCharacteristic.addEventListener('characteristicvaluechanged', async (event) => {
+                logDebug("🔔 Ping received from ESP32! Data changed.");
+                if(isReading) return;
+                isReading = true;
+                await fetchFullDataFromESP32();
+                isReading = false;
+            });
+
+            // Update UI
+            document.getElementById('statusDot').className = 'status-dot status-connected';
+            document.getElementById('statusText').innerText = "Connected to ESP32";
+            document.getElementById('bleConnectBtn').innerText = "ESP32 Synced";
+        }
+
+        function onDisconnected() {
+            if(!isHost) return;
+            document.getElementById('statusDot').className = 'status-dot status-disconnected';
+            document.getElementById('statusText').innerText = "Disconnected. Click to Reconnect.";
+            document.getElementById('bleConnectBtn').innerText = "Reconnect ESP32";
+            logDebug("❌ Bluetooth Disconnected!");
+        }
+
+        // ==========================================
+        // DUAL-FORMAT PARSER & UI RENDERERS
+        // ==========================================
+        function parseIncomingData(jsonString) {
             try {
                 const esp32Data = JSON.parse(jsonString);
                 
-                // Expecting JSON structure from ESP32:
-                // { "bal": [1500, 1000, 1200, 1850], "own": [-1, 0, -1...], "hs": [0, 1, 0...] }
-                
+                // This adapts whether your Arduino says "bal" OR "players"!
                 if(esp32Data.bal) {
                     esp32Data.bal.forEach((balance, index) => {
                         if(playersDatabase[index]) playersDatabase[index].balance = balance;
                     });
+                } else if(esp32Data.players) {
+                    esp32Data.players.forEach((balance, index) => {
+                        if(playersDatabase[index]) playersDatabase[index].balance = balance;
+                    });
                 }
                 
+                // This adapts whether your Arduino says "own/hs" OR "p"!
                 if(esp32Data.own && esp32Data.hs) {
                     esp32Data.own.forEach((ownerId, index) => {
                         if(propertiesDatabase[index]) {
-                            propertiesDatabase[index].ownerIndex = ownerId;        // Updates Owner Banner
-                            propertiesDatabase[index].housesOwned = esp32Data.hs[index]; // Updates Yellow Highlight
+                            propertiesDatabase[index].ownerIndex = ownerId;        
+                            propertiesDatabase[index].housesOwned = esp32Data.hs[index]; 
+                        }
+                    });
+                } else if (esp32Data.p) {
+                    esp32Data.p.forEach((propArray, index) => {
+                        if (propertiesDatabase[index] && propArray.length >= 2) {
+                            propertiesDatabase[index].ownerIndex = propArray[0];
+                            propertiesDatabase[index].housesOwned = propArray[1];
                         }
                     });
                 }
                 
-                // Re-render UI with new data automatically
                 renderDashboardPlayers();
                 renderProperties();
-
             } catch(e) {
-                console.error("Failed to parse incoming BLE JSON string:", e);
+                console.error("Failed parsing JSON:", e);
+                logDebug("❌ Failed to parse JSON to UI: " + e.message);
             }
         }
 
-
-        // ==========================================
-        // RENDERERS
-        // ==========================================
         function getOwnerDetails(index) {
             if (index === 0) return { name: "Player 1", css: "owner-p1" };
             if (index === 1) return { name: "Player 2", css: "owner-p2" };
@@ -682,23 +522,10 @@
             } else if (prop.type === "utility") {
                 let utilityIcon = '';
                 if (prop.name === "ELECTRIC COMPANY") {
-                    utilityIcon = `
-                    <div style="margin: 10px 0; text-align: center;">
-                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 18h6"></path><path d="M10 22h4"></path>
-                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.5.5 2.5 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
-                        </svg>
-                    </div>`;
+                    utilityIcon = `<div style="margin: 10px 0; text-align: center;"><svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.5.5 2.5 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path></svg></div>`;
                 } else if (prop.name === "WATER WORKS") {
-                    utilityIcon = `
-                    <div style="margin: 10px 0; text-align: center;">
-                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 8h12a2 2 0 0 1 2 2v2"></path><path d="M12 8V5h3"></path>
-                            <path d="M19 15v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3"></path><path d="M17 22v.01"></path>
-                        </svg>
-                    </div>`;
+                    utilityIcon = `<div style="margin: 10px 0; text-align: center;"><svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h12a2 2 0 0 1 2 2v2"></path><path d="M12 8V5h3"></path><path d="M19 15v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3"></path><path d="M17 22v.01"></path></svg></div>`;
                 }
-
                 innerBodyHTML = `
                     ${utilityIcon}
                     <div style="padding: 10px; text-align: left; flex-grow: 1;">
@@ -729,34 +556,22 @@
 
         function chunkArray(array, size) {
             const result = [];
-            for (let i = 0; i < array.length; i += size) {
-                result.push(array.slice(i, i + size));
-            }
+            for (let i = 0; i < array.length; i += size) result.push(array.slice(i, i + size));
             return result;
         }
 
         function renderProperties() {
             const grid = document.getElementById('properties-grid');
             grid.innerHTML = '';
-            propertiesDatabase.forEach(prop => {
-                grid.innerHTML += createCardHTML(prop);
-            });
+            propertiesDatabase.forEach(prop => { grid.innerHTML += createCardHTML(prop); });
 
             const scrollContainer = document.getElementById('properties-scroll');
             scrollContainer.innerHTML = '';
 
-            const groups = {
-                "-1": { title: "The Bank", props: [] },
-                "0": { title: "Player 1", props: [] },
-                "1": { title: "Player 2", props: [] },
-                "2": { title: "Player 3", props: [] },
-                "3": { title: "Player 4", props: [] }
-            };
+            const groups = { "-1": { title: "The Bank", props: [] }, "0": { title: "Player 1", props: [] }, "1": { title: "Player 2", props: [] }, "2": { title: "Player 3", props: [] }, "3": { title: "Player 4", props: [] } };
 
             propertiesDatabase.forEach(prop => {
-                if (groups[prop.ownerIndex]) {
-                    groups[prop.ownerIndex].props.push(prop);
-                }
+                if (groups[prop.ownerIndex]) groups[prop.ownerIndex].props.push(prop);
             });
 
             Object.keys(groups).sort().forEach(ownerId => {
@@ -767,9 +582,7 @@
                 let pagesHTML = '';
                 chunks.forEach(chunk => {
                     let cardsHTML = '';
-                    chunk.forEach(prop => {
-                        cardsHTML += createCardHTML(prop);
-                    });
+                    chunk.forEach(prop => { cardsHTML += createCardHTML(prop); });
                     pagesHTML += `<div class="grid-page">${cardsHTML}</div>`;
                 });
 
