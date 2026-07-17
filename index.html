@@ -421,16 +421,12 @@
         function startCloudListener() {
             if (isListening || !window.firebaseDB) return;
             isListening = true;
-            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
+            console.log("Starting Firebase Listener on /gameState/data");
+            const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/data');
             window.firebaseOnValue(dbRef, (snapshot) => {
                 const data = snapshot.val();
-                if (data && false) {
-                    // Pull down synced names from the Host
-                    if (data.names) {
-                        data.names.forEach((n, i) => { if(playersDatabase[i]) playersDatabase[i].name = n; });
-                    }
-                    parseIncomingData(JSON.stringify(data)); 
-                    document.getElementById('statusText').innerText = 'Synced with Cloud ✅';
+                if (data) {
+                    parseIncomingData(data); 
                 }
             });
         }
@@ -505,46 +501,9 @@
 
         
 
-        async function fetchFullDataFromESP32() {
-            try {
-                const value = await myBleTxCharacteristic.readValue();
-                const decoder = new TextDecoder('utf-8');
-                const rawJson = decoder.decode(value).replace(/\0/g, '').trim();
-                
-                if (rawJson.startsWith('{') && rawJson.endsWith('}')) {
-                    parseIncomingData(rawJson); 
-                    uploadToCloud();     
-                } 
-            } catch (error) {
-                logDebug("❌ Read failed. " + error.message);
-            }
-        }
+        
 
-        async function executeBLEConnection() {
-            document.getElementById('statusText').innerText = "Connecting to Server...";
-            const server = await myBleDevice.gatt.connect();
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const service = await server.getPrimaryService(SERVICE_UUID);
-            myBleTxCharacteristic = await service.getCharacteristic(CHARACTERISTIC_TX_UUID);
-            myBleRxCharacteristic = await service.getCharacteristic(CHARACTERISTIC_RX_UUID);
-
-            document.getElementById('statusText').innerText = "Syncing Data...";
-            await fetchFullDataFromESP32();
-            await myBleTxCharacteristic.startNotifications();
-            
-            let isReading = false;
-            myBleTxCharacteristic.addEventListener('characteristicvaluechanged', async (event) => {
-                if(isReading) return;
-                isReading = true;
-                await fetchFullDataFromESP32();
-                isReading = false;
-            });
-
-            document.getElementById('statusDot').className = 'status-dot status-connected';
-            document.getElementById('statusText').innerText = "Connected to ESP32";
-            document.getElementById('bleConnectBtn').innerText = "ESP32 Synced";
-        }
+        
 
         function onDisconnected() {
             if(false) return;
@@ -557,77 +516,37 @@
         // ==========================================
         // DUAL-FORMAT PARSER & UI RENDERERS
         // ==========================================
-        function parseIncomingData(jsonString) {
+        function parseIncomingData(esp32Data) {
             try {
-                const esp32Data = JSON.parse(jsonString);
-                lastParsedDataObj = esp32Data;
-                
-                // Track Turn & Mode
-                if(esp32Data.md !== undefined) currentMode = esp32Data.md;
-                if(esp32Data.turn !== undefined) currentTurnIdx = esp32Data.turn;
+                if(esp32Data.mode !== undefined) currentMode = esp32Data.mode;
+                if(esp32Data.blitzTurnIdx !== undefined) currentTurnIdx = esp32Data.blitzTurnIdx;
 
-                // Sync Modals for names
-                if(esp32Data.req_name !== undefined && esp32Data.req_name >= 0 && esp32Data.req_name < 7) {
-                    showNameModal(esp32Data.req_name);
-                } else {
-                    hideNameModal();
-                }
+                if (esp32Data.players) {
+                    esp32Data.players.forEach((cloudPlayer, i) => {
+                        if (playersDatabase[i]) {
+                            const activePlayer = playersDatabase[i];
+                            activePlayer.balance = cloudPlayer.balance;
+                            activePlayer.inGame = cloudPlayer.inGame;
+                            activePlayer.isBankrupt = cloudPlayer.isBankrupt;
+                            
+                            // Name sync from cloud (if it differs and isn't empty)
+                            if (cloudPlayer.name && cloudPlayer.name.trim() !== '') {
+                                activePlayer.name = cloudPlayer.name;
+                            }
 
-                // Parse Balances
-                if(esp32Data.bal) {
-                    esp32Data.bal.forEach((balance, index) => {
-                        if(playersDatabase[index]) playersDatabase[index].balance = balance;
-                    });
-                } else if(esp32Data.players) {
-                    esp32Data.players.forEach((balance, index) => {
-                        if(playersDatabase[index]) playersDatabase[index].balance = balance;
-                    });
-                }
-
-                // Parse Live Time, InGame, and Bankrupt
-                if(esp32Data.tm) {
-                    esp32Data.tm.forEach((timeSec, index) => {
-                        if(playersDatabase[index]) {
-                            // Isolate the ticking! Only override if desynced by more than 2 seconds, or if not their turn
-                            if (Math.abs(playersDatabase[index].timeSecs - timeSec) > 2 || currentTurnIdx !== index) {
-                                playersDatabase[index].timeSecs = timeSec;
+                            // Timer purposefully NOT synced to prevent twitching
+                            // Only sync if drastically off (e.g. Go+ adds time)
+                            if (Math.abs(activePlayer.timeSecs - cloudPlayer.timeSecs) > 5) {
+                                activePlayer.timeSecs = cloudPlayer.timeSecs;
                             }
                         }
                     });
                 }
-                if(esp32Data.in) {
-                    esp32Data.in.forEach((inStatus, index) => {
-                        if(playersDatabase[index]) playersDatabase[index].inGame = inStatus;
-                    });
-                }
-                if(esp32Data.bk) {
-                    esp32Data.bk.forEach((bkStatus, index) => {
-                        if(playersDatabase[index]) playersDatabase[index].isBankrupt = bkStatus;
-                    });
-                }
                 
-                // Parse Properties
-                if(esp32Data.own && esp32Data.hs) {
-                    esp32Data.own.forEach((ownerId, index) => {
-                        if(propertiesDatabase[index]) {
-                            propertiesDatabase[index].ownerIndex = ownerId;        
-                            propertiesDatabase[index].housesOwned = esp32Data.hs[index]; 
-                        }
-                    });
-                } else if (esp32Data.p) {
-                    esp32Data.p.forEach((propArray, index) => {
-                        if (propertiesDatabase[index] && propArray.length >= 2) {
-                            propertiesDatabase[index].ownerIndex = propArray[0];
-                            propertiesDatabase[index].housesOwned = propArray[1];
-                        }
-                    });
-                }
-                
-                updateMarqueeBanner();
                 renderDashboardPlayers();
-                renderProperties();
-            } catch(e) {
-                console.error("Failed parsing JSON:", e);
+                
+            } catch (error) {
+                console.error("JSON Parsing error:", error);
             }
         }
 
@@ -892,6 +811,7 @@
             document.title = "Monopoly Dashboard V11 (WiFi)";
             renderProperties();
             renderDashboardPlayers();
+            startCloudListener();
             // Default setup view
             document.getElementById('marquee-container').classList.remove('hidden');
         };
