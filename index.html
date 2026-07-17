@@ -429,9 +429,11 @@
             if (isHost) {
                 // Host sends directly to ESP32
                 if (myBleRxCharacteristic) {
-                    const payload = "N:" + idx + ":" + name;
-                    console.log("Sending BLE payload: " + payload);
-                    myBleRxCharacteristic.writeValue(new TextEncoder().encode(payload))
+                    const payloadObj = { set_name: true, idx: idx, name: name };
+                    const payloadStr = JSON.stringify(payloadObj);
+                    console.log("Sending BLE payload: " + payloadStr);
+                    const dataArray = new Uint8Array(new TextEncoder().encode(payloadStr));
+                    myBleRxCharacteristic.writeValue(dataArray)
                         .catch(e => console.error("BLE Write Error:", e));
                 }
                 uploadToCloud();
@@ -885,8 +887,8 @@
         }
 
         window.onload = () => {
-            console.log("=== RUNNING MONOPOLY DASHBOARD V5 ===");
-            document.title = "Monopoly Dashboard V5";
+            console.log("=== RUNNING MONOPOLY DASHBOARD V6 ===");
+            document.title = "Monopoly Dashboard V6";
             renderProperties();
             renderDashboardPlayers();
             // Default setup view
