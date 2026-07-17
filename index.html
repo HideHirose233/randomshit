@@ -431,11 +431,8 @@
                 if (myBleRxCharacteristic) {
                     const payload = "N:" + idx + ":" + name;
                     console.log("Sending BLE payload: " + payload);
-                    if (myBleRxCharacteristic.writeValueWithoutResponse) {
-                        myBleRxCharacteristic.writeValueWithoutResponse(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
-                    } else {
-                        myBleRxCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
-                    }
+                    myBleRxCharacteristic.writeValue(new TextEncoder().encode(payload))
+                        .catch(e => console.error("BLE Write Error:", e));
                 }
                 uploadToCloud();
             } else if (!isHost && window.firebaseDB) {
@@ -645,6 +642,53 @@
 
         function renderDashboardPlayers() {
             const container = document.getElementById('dashboard-players');
+            
+            // SMOOTH DOM UPDATE: Do not destroy the DOM if we don't need to! This stops flickering/twitching.
+            const currentRenderCount = container.children.length;
+            const expectedRenderCount = playersDatabase.filter(p => p.inGame).length;
+            
+            if (currentRenderCount === expectedRenderCount && expectedRenderCount > 0) {
+                // Just update the inner text of existing elements!
+                let childIdx = 0;
+                playersDatabase.forEach((player, index) => {
+                    if (!player.inGame) return;
+                    
+                    const cardEl = container.children[childIdx];
+                    
+                    if (player.isBankrupt) {
+                        cardEl.style.background = 'black';
+                        cardEl.style.color = 'white';
+                        cardEl.style.borderColor = '#444';
+                        cardEl.innerHTML = `
+                            <div class="dashboard-player-name amasis-font" style="text-shadow: none;">${player.name}</div>
+                            <div class="dashboard-player-balance amasis-font" style="color: #ff3333; font-size: 1.2rem; margin-top: 15px;">YOU'RE BANKRUPT!</div>
+                        `;
+                    } else {
+                        cardEl.style.background = '';
+                        cardEl.style.color = '';
+                        
+                        if (currentTurnIdx === index) {
+                            cardEl.classList.add('active-turn');
+                        } else {
+                            cardEl.classList.remove('active-turn');
+                        }
+                        
+                        cardEl.innerHTML = `
+                            <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
+                            <div class="dashboard-player-balance amasis-font">
+                                $${player.balance}
+                                <div>
+                                    <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    childIdx++;
+                });
+                return;
+            }
+
+            // FULL REDRAW (Only happens on first load or when players enter/leave game)
             container.innerHTML = '';
             playersDatabase.forEach((player, index) => {
                 if (!player.inGame) return; // Hide players not in the game
@@ -841,6 +885,8 @@
         }
 
         window.onload = () => {
+            console.log("=== RUNNING MONOPOLY DASHBOARD V5 ===");
+            document.title = "Monopoly Dashboard V5";
             renderProperties();
             renderDashboardPlayers();
             // Default setup view
