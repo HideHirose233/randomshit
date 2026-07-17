@@ -108,7 +108,7 @@
         .placeholder-text { text-align: center; padding: 50px; font-size: 1.2rem; color: #666; }
 
         /* --- MODAL DIALOG (UN-CLOSABLE) --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; backdrop-filter: blur(5px); }
         .modal-box { background: #f4f0ec; color: black; padding: 30px; border: 6px solid #ce1126; border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(206, 17, 38, 0.6); width: 90%; max-width: 450px; }
         .modal-box h2 { font-size: 2rem; margin-bottom: 10px; text-transform: uppercase; color: #ce1126;}
         .modal-box p { font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
@@ -225,6 +225,30 @@
             <p>Please enter the display name.</p>
             <p style="font-size:0.8rem; color:#666;">(Press ENTER to confirm)</p>
             <input type="text" id="modal-input" class="modal-input" placeholder="Name..." autocomplete="off">
+        </div>
+    </div>
+    
+    <div id="mode-select-modal" class="modal-overlay hidden">
+        <div class="modal-box amasis-font">
+            <h2>Select Game Mode</h2>
+            <button class="menu-btn" onclick="selectGameMode(1)">Standard Mode</button>
+            <button class="menu-btn" onclick="selectGameMode(2)">Blitz Mode</button>
+        </div>
+    </div>
+    
+    <div id="name-edit-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="background: #f0f0f0; color: black; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); border-radius: 3px; max-width: 350px; padding: 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="font-size: 14px;">JavaScript Prompt</span>
+                <span onclick="closeNameEditModal()" style="cursor: pointer; font-size: 16px; font-weight: bold; color: #555;">&times;</span>
+            </div>
+            <div style="font-size: 14px; margin-bottom: 10px;" id="name-edit-prompt-text">Enter new name:</div>
+            <input type="text" id="name-edit-input" maxlength="10" style="width: 100%; padding: 5px; font-size: 14px; border: 1px solid #0078D7; margin-bottom: 15px; box-sizing: border-box;">
+            <input type="hidden" id="name-edit-idx">
+            <div style="text-align: right;">
+                <button onclick="saveEditedName()" style="background: #e1e1e1; border: 1px solid #adadad; padding: 4px 15px; margin-right: 5px; cursor: pointer; border-radius: 2px;">OK</button>
+                <button onclick="closeNameEditModal()" style="background: #e1e1e1; border: 1px solid #adadad; padding: 4px 15px; cursor: pointer; border-radius: 2px;">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -384,7 +408,7 @@
         }
 
         function uploadToCloud() {
-            if (!isHost || !window.firebaseDB) return;
+            if (false || !window.firebaseDB) return;
             try {
                 // Attach our locally managed names so WiFi players see them
                 lastParsedDataObj.names = playersDatabase.map(p => p.name);
@@ -400,7 +424,7 @@
             const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
             window.firebaseOnValue(dbRef, (snapshot) => {
                 const data = snapshot.val();
-                if (data && !isHost) {
+                if (data && false) {
                     // Pull down synced names from the Host
                     if (data.names) {
                         data.names.forEach((n, i) => { if(playersDatabase[i]) playersDatabase[i].name = n; });
@@ -415,32 +439,41 @@
         // PLAYER NAME MANAGEMENT (MODAL & DASHBOARD)
         // ==========================================
         window.editPlayerName = function(idx) {
-            let current = playersDatabase[idx].name;
-            let newName = prompt(`Enter new name for Player ${idx + 1}`, current);
-            if (newName && newName.trim() !== "") {
-                playersDatabase[idx].name = newName.trim().toUpperCase();
-                sendNameUpdate(idx, newName.trim().toUpperCase());
-                renderDashboardPlayers();
+            document.getElementById('name-edit-idx').value = idx;
+            document.getElementById('name-edit-prompt-text').innerText = `Enter new name for Player ${idx + 1}`;
+            document.getElementById('name-edit-input').value = playersDatabase[idx].name;
+            document.getElementById('name-edit-modal').classList.remove('hidden');
+            document.getElementById('name-edit-input').focus();
+        }
+        
+        window.closeNameEditModal = function() {
+            document.getElementById('name-edit-modal').classList.add('hidden');
+        }
+        
+        window.saveEditedName = function() {
+            const idx = parseInt(document.getElementById('name-edit-idx').value);
+            const inputVal = document.getElementById('name-edit-input').value;
+            if (inputVal && inputVal.trim() !== "") {
+                const cleanedName = inputVal.trim().substring(0, 10).toUpperCase();
+                playersDatabase[idx].name = cleanedName;
+                sendNameUpdate(idx, cleanedName);
+                // Update DOM directly instead of redrawing
+                const nameEl = document.getElementById(`player-name-${idx}`);
+                if (nameEl) nameEl.innerHTML = cleanedName + ' ✏️';
                 renderProperties(); // Update owner banners
             }
+            closeNameEditModal();
         }
 
         window.sendNameUpdate = function(idx, name) {
-            if (isHost) {
-                // Host sends directly to ESP32
-                if (myBleRxCharacteristic) {
-                    const payloadObj = { set_name: true, idx: idx, name: name };
-                    const payloadStr = JSON.stringify(payloadObj);
-                    console.log("Sending BLE payload: " + payloadStr);
-                    const dataArray = new Uint8Array(new TextEncoder().encode(payloadStr));
-                    myBleRxCharacteristic.writeValue(dataArray)
-                        .catch(e => console.error("BLE Write Error:", e));
-                }
-                uploadToCloud();
-            } else if (!isHost && window.firebaseDB) {
-                // WiFi players queue a command in Firebase for the Host to fulfill
-                const cmdRef = window.firebaseRef(window.firebaseDB, 'monopoly/name_cmd');
-                window.firebaseSet(cmdRef, { idx: idx, name: name, ts: Date.now() });
+            if (window.firebaseDB) {
+                // Update just the name array directly in Firebase RTDB
+                window.firebaseDB.ref('gameState/playerNames').set({
+                    idx: idx,
+                    name: name
+                }).then(() => {
+                    console.log("Saved name to cloud:", name);
+                }).catch(e => console.error("Cloud save error:", e));
             }
         }
 
@@ -470,39 +503,7 @@
             }
         });
 
-        // ==========================================
-        // WEB BLUETOOTH (HOST ONLY)
-        // ==========================================
-        const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-        const CHARACTERISTIC_TX_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214"; // ESP32 -> HTML
-        const CHARACTERISTIC_RX_UUID = "19b10002-e8f2-537e-4f6c-d104768a1214"; // HTML -> ESP32
-        let myBleDevice, myBleTxCharacteristic, myBleRxCharacteristic;
-
-        document.getElementById('bleConnectBtn').addEventListener('click', async () => {
-            if(!isHost) return;
-            try {
-                document.getElementById('statusText').innerText = "Searching...";
-                logDebug("Asking Windows for permission to scan...");
-
-                if (myBleDevice && myBleDevice.gatt && !myBleDevice.gatt.connected) {
-                    await executeBLEConnection();
-                    return;
-                }
-
-                myBleDevice = await navigator.bluetooth.requestDevice({ 
-                    acceptAllDevices: true, 
-                    optionalServices: [SERVICE_UUID] 
-                });
-                
-                myBleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-                await executeBLEConnection();
-
-            } catch (error) {
-                console.error("BLE Error:", error);
-                document.getElementById('statusText').innerText = "Connection Failed";
-                logDebug("Error: " + error.message);
-            }
-        });
+        
 
         async function fetchFullDataFromESP32() {
             try {
@@ -546,7 +547,7 @@
         }
 
         function onDisconnected() {
-            if(!isHost) return;
+            if(false) return;
             document.getElementById('statusDot').className = 'status-dot status-disconnected';
             document.getElementById('statusText').innerText = "Disconnected. Click to Reconnect.";
             document.getElementById('bleConnectBtn').innerText = "Reconnect ESP32";
@@ -676,8 +677,8 @@
                         }
                         
                         cardEl.innerHTML = `
-                            <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
-                            <div class="dashboard-player-balance amasis-font">
+                            <div class="dashboard-player-name amasis-font" id="player-name-${index}" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
+                            <div class="dashboard-player-balance amasis-font" id="player-bal-${index}">
                                 $${player.balance}
                                 <div>
                                     <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
@@ -712,9 +713,9 @@
                 let activeClass = (currentTurnIdx === index) ? 'active-turn' : '';
                 
                 const playerCard = `
-                    <div class="dashboard-player-card ${activeClass}">
-                        <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
-                        <div class="dashboard-player-balance amasis-font">
+                    <div class="dashboard-player-card ${activeClass}" id="player-card-${index}">
+                        <div class="dashboard-player-name amasis-font" id="player-name-${index}" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
+                        <div class="dashboard-player-balance amasis-font" id="player-bal-${index}">
                             $${player.balance}
                             <div>
                                 <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
@@ -887,8 +888,8 @@
         }
 
         window.onload = () => {
-            console.log("=== RUNNING MONOPOLY DASHBOARD V6 ===");
-            document.title = "Monopoly Dashboard V6";
+            console.log("=== RUNNING MONOPOLY DASHBOARD V11 (WIFI) ===");
+            document.title = "Monopoly Dashboard V11 (WiFi)";
             renderProperties();
             renderDashboardPlayers();
             // Default setup view
