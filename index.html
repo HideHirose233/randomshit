@@ -428,13 +428,13 @@
         window.sendNameUpdate = function(idx, name) {
             if (isHost) {
                 // Host sends directly to ESP32
-                if (myBleCharacteristic) {
+                if (myBleRxCharacteristic) {
                     const payload = "N:" + idx + ":" + name;
                     console.log("Sending BLE payload: " + payload);
-                    if (myBleCharacteristic.writeValueWithoutResponse) {
-                        myBleCharacteristic.writeValueWithoutResponse(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
+                    if (myBleRxCharacteristic.writeValueWithoutResponse) {
+                        myBleRxCharacteristic.writeValueWithoutResponse(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
                     } else {
-                        myBleCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
+                        myBleRxCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
                     }
                 }
                 uploadToCloud();
@@ -475,8 +475,9 @@
         // WEB BLUETOOTH (HOST ONLY)
         // ==========================================
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-        const CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
-        let myBleDevice, myBleCharacteristic;
+        const CHARACTERISTIC_TX_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214"; // ESP32 -> HTML
+        const CHARACTERISTIC_RX_UUID = "19b10002-e8f2-537e-4f6c-d104768a1214"; // HTML -> ESP32
+        let myBleDevice, myBleTxCharacteristic, myBleRxCharacteristic;
 
         document.getElementById('bleConnectBtn').addEventListener('click', async () => {
             if(!isHost) return;
@@ -506,7 +507,7 @@
 
         async function fetchFullDataFromESP32() {
             try {
-                const value = await myBleCharacteristic.readValue();
+                const value = await myBleTxCharacteristic.readValue();
                 const decoder = new TextDecoder('utf-8');
                 const rawJson = decoder.decode(value).replace(/\0/g, '').trim();
                 
@@ -525,14 +526,15 @@
             await new Promise(resolve => setTimeout(resolve, 500));
 
             const service = await server.getPrimaryService(SERVICE_UUID);
-            myBleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+            myBleTxCharacteristic = await service.getCharacteristic(CHARACTERISTIC_TX_UUID);
+            myBleRxCharacteristic = await service.getCharacteristic(CHARACTERISTIC_RX_UUID);
 
             document.getElementById('statusText').innerText = "Syncing Data...";
             await fetchFullDataFromESP32();
-            await myBleCharacteristic.startNotifications();
+            await myBleTxCharacteristic.startNotifications();
             
             let isReading = false;
-            myBleCharacteristic.addEventListener('characteristicvaluechanged', async (event) => {
+            myBleTxCharacteristic.addEventListener('characteristicvaluechanged', async (event) => {
                 if(isReading) return;
                 isReading = true;
                 await fetchFullDataFromESP32();
@@ -824,4 +826,26 @@
                     let cardsHTML = '';
                     chunk.forEach(prop => { cardsHTML += createCardHTML(prop); });
                     pagesHTML += `<div class="grid-page">${cardsHTML}</div>`;
-              
+                });
+
+                const sectionHTML = `
+                    <div class="owner-section">
+                        <h3 class="owner-title amasis-font">${group.title}</h3>
+                        <div class="horizontal-scroll-container">
+                            ${pagesHTML}
+                        </div>
+                    </div>
+                `;
+                scrollContainer.innerHTML += sectionHTML;
+            });
+        }
+
+        window.onload = () => {
+            renderProperties();
+            renderDashboardPlayers();
+            // Default setup view
+            document.getElementById('marquee-container').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>
