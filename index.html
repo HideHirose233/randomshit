@@ -430,7 +430,12 @@
                 // Host sends directly to ESP32
                 if (myBleCharacteristic) {
                     const payload = "N:" + idx + ":" + name;
-                    myBleCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error(e));
+                    console.log("Sending BLE payload: " + payload);
+                    if (myBleCharacteristic.writeValueWithoutResponse) {
+                        myBleCharacteristic.writeValueWithoutResponse(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
+                    } else {
+                        myBleCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error("BLE Write Error:", e));
+                    }
                 }
                 uploadToCloud();
             } else if (!isHost && window.firebaseDB) {
@@ -580,7 +585,12 @@
                 // Parse Live Time, InGame, and Bankrupt
                 if(esp32Data.tm) {
                     esp32Data.tm.forEach((timeSec, index) => {
-                        if(playersDatabase[index]) playersDatabase[index].timeSecs = timeSec;
+                        if(playersDatabase[index]) {
+                            // Isolate the ticking! Only override if desynced by more than 2 seconds, or if not their turn
+                            if (Math.abs(playersDatabase[index].timeSecs - timeSec) > 2 || currentTurnIdx !== index) {
+                                playersDatabase[index].timeSecs = timeSec;
+                            }
+                        }
                     });
                 }
                 if(esp32Data.in) {
@@ -814,26 +824,4 @@
                     let cardsHTML = '';
                     chunk.forEach(prop => { cardsHTML += createCardHTML(prop); });
                     pagesHTML += `<div class="grid-page">${cardsHTML}</div>`;
-                });
-
-                const sectionHTML = `
-                    <div class="owner-section">
-                        <h3 class="owner-title amasis-font">${group.title}</h3>
-                        <div class="horizontal-scroll-container">
-                            ${pagesHTML}
-                        </div>
-                    </div>
-                `;
-                scrollContainer.innerHTML += sectionHTML;
-            });
-        }
-
-        window.onload = () => {
-            renderProperties();
-            renderDashboardPlayers();
-            // Default setup view
-            document.getElementById('marquee-container').classList.remove('hidden');
-        };
-    </script>
-</body>
-</html>
+              
