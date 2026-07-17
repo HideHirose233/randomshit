@@ -14,6 +14,11 @@
         b, strong, h1, h2, h3, .amasis-font { font-family: 'Amasis MT Pro', 'Times New Roman', serif; font-weight: bold; }
         .hidden { display: none !important; }
 
+        /* --- MARQUEE BANNER --- */
+        .marquee-container { width: 100%; background: #111; color: #ffcc00; font-family: 'Share Tech Mono', monospace; padding: 8px 0; overflow: hidden; position: relative; border-bottom: 3px solid #ffcc00; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+        .marquee-content { white-space: nowrap; display: inline-block; animation: marquee 12s linear infinite; font-size: 1.3rem; letter-spacing: 2px; }
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+
         /* --- DASHBOARD PAGE --- */
         #dashboard-page { display: flex; flex-direction: column; align-items: center; padding: 20px; text-align: center; }
         .monopoly-title { font-size: 3.5rem; letter-spacing: 2px; margin-top: 10px; text-transform: uppercase; border: 4px solid white; padding: 10px 20px; background-color: #ce1126; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
@@ -33,11 +38,14 @@
         .status-cloud { color: #00bfff; text-shadow: 0 0 5px #00bfff; } 
 
         /* --- DASHBOARD PLAYERS LIST --- */
+        .players-header-container { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 10px; }
         #dashboard-players { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 500px; margin-bottom: 30px; }
-        .dashboard-player-card { background-color: #f4f0ec; color: black; border: 3px solid black; border-radius: 10px; padding: 15px 10px; text-align: center; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
-        .dashboard-player-name { font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; }
+        .dashboard-player-card { background-color: #f4f0ec; color: black; border: 3px solid black; border-radius: 10px; padding: 15px 10px; text-align: center; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); transition: all 0.3s ease;}
+        .dashboard-player-card.active-turn { border-color: #ffcc00; box-shadow: 0 0 20px #ffcc00, inset 0 0 10px rgba(255,204,0,0.5); transform: scale(1.03); z-index: 10;}
+        .dashboard-player-name { font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; cursor: pointer; border-bottom: 1px dashed #666; display: inline-block; padding-bottom: 2px; }
+        .dashboard-player-name:hover { color: #ce1126; }
         .dashboard-player-balance { color: #2e8b57; font-size: 1.4rem; }
-        .dashboard-player-time { font-family: 'Share Tech Mono', monospace; font-size: 1.2rem; color: #ff3333; background-color: #111; border: 2px solid #000; border-radius: 5px; padding: 3px 12px; display: inline-block; margin-top: 8px; box-shadow: inset 0px 0px 6px rgba(0,0,0,0.8); letter-spacing: 2px; text-shadow: 0 0 4px rgba(255, 51, 51, 0.5); }
+        .dashboard-player-time { font-family: 'Share Tech Mono', monospace; font-size: 1.3rem; color: #ff3333; background-color: #111; border: 2px solid #000; border-radius: 5px; padding: 4px 12px; display: inline-block; margin-top: 8px; box-shadow: inset 0px 0px 6px rgba(0,0,0,0.8); letter-spacing: 2px; text-shadow: 0 0 4px rgba(255, 51, 51, 0.5); }
 
         /* --- MENU BUTTONS --- */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
@@ -46,7 +54,7 @@
         .menu-btn:active { transform: translateY(6px); box-shadow: 0 0px 0px black; }
         .menu-icon { font-size: 3rem; margin-bottom: 10px; }
 
-        /* --- LIVE DATA LOG (FOR DEBUGGING) --- */
+        /* --- LIVE DATA LOG --- */
         #debugLog { width: 100%; max-width: 500px; background: #111; color: #0f0; font-family: monospace; font-size: 0.8rem; padding: 10px; border-radius: 5px; margin-top: 20px; white-space: pre-wrap; word-wrap: break-word; text-align: left; max-height: 120px; overflow-y: auto; border: 2px solid #555; }
 
         /* --- SUB-PAGES GENERAL STYLES --- */
@@ -65,15 +73,20 @@
         .card-header h3 { font-size: 0.8rem; margin: 0; }
         .card-body { padding: 8px; display: flex; flex-direction: column; gap: 3px; flex-grow: 1; }
         .rent-row { display: flex; justify-content: space-between; padding: 2px 4px; }
-        .rent-row.highlight { border: 2px solid #ffcc00; background-color: rgba(255, 204, 0, 0.4); border-radius: 3px; }
+        .rent-row.highlight { border: 2px solid #ffcc00; background-color: rgba(255, 204, 0, 0.4); border-radius: 3px; font-weight: bold; box-shadow: 0 0 5px rgba(255, 204, 0, 0.8); }
         .rent-row.highlight b { color: black; }
         .card-footer { margin-top: auto; border-top: 1px solid #ccc; padding-top: 5px; font-size: 0.75rem; display: flex; flex-direction: column; gap: 3px; padding-bottom: 5px; }
         .owner-banner { padding: 8px; font-size: 0.9rem; text-transform: uppercase; border-top: 2px solid black; }
+        
+        /* 7 PLAYER OWNER COLORS */
         .owner-bank { background-color: #e0e0e0; color: #555; }
         .owner-p1 { background-color: #cce5ff; color: #004085; }
         .owner-p2 { background-color: #d4edda; color: #155724; }
         .owner-p3 { background-color: #fff3cd; color: #856404; }
         .owner-p4 { background-color: #f8d7da; color: #721c24; }
+        .owner-p5 { background-color: #e2d1f9; color: #4b0082; } 
+        .owner-p6 { background-color: #ffe4b5; color: #8b4500; } 
+        .owner-p7 { background-color: #d1eeee; color: #008b8b; } 
 
         #properties-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 1200px; margin: 0 auto; }
         @media (min-width: 768px) { #properties-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -84,16 +97,23 @@
         .horizontal-scroll-container { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 10px; scroll-snap-type: x mandatory; -ms-overflow-style: none; scrollbar-width: none; }
         .horizontal-scroll-container::-webkit-scrollbar { display: none; }
         .grid-page { display: grid; grid-template-columns: repeat(2, 150px); grid-template-rows: repeat(2, auto); justify-content: center; gap: 10px; min-width: 100%; flex-shrink: 0; scroll-snap-align: center; }
-        .grid-page .property-card { width: 150px; min-width: 150px; max-width: 150px; min-height: 220px; font-size: 0.65rem; }
+        .grid-page .property-card { width: 150px; min-width: 150px; max-width: 150px; min-height: 230px; font-size: 0.65rem; }
         .grid-page .card-header { min-height: 45px; padding: 6px 2px; margin: 2px; }
         .grid-page .card-header span { font-size: 0.55rem !important; }
         .grid-page .card-header h3 { font-size: 0.7rem; }
         .grid-page .card-body { padding: 4px; gap: 2px; }
         .grid-page .rent-row { padding: 2px 4px; }
-        .grid-page .rent-row.highlight { border: 2px solid #ffcc00; }
         .grid-page .card-footer { font-size: 0.55rem; margin-top: 4px; padding-top: 4px; }
         .grid-page .owner-banner { font-size: 0.7rem; padding: 6px; }
         .placeholder-text { text-align: center; padding: 50px; font-size: 1.2rem; color: #666; }
+
+        /* --- MODAL DIALOG (UN-CLOSABLE) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-box { background: #f4f0ec; color: black; padding: 30px; border: 6px solid #ce1126; border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(206, 17, 38, 0.6); width: 90%; max-width: 450px; }
+        .modal-box h2 { font-size: 2rem; margin-bottom: 10px; text-transform: uppercase; color: #ce1126;}
+        .modal-box p { font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
+        .modal-input { width: 100%; padding: 15px; font-size: 1.5rem; text-align: center; border: 3px solid black; border-radius: 5px; text-transform: uppercase; font-family: 'Arial', sans-serif; font-weight: bold; outline: none;}
+        .modal-input:focus { border-color: #ce1126; box-shadow: 0 0 10px rgba(206,17,38,0.5); }
     </style>
 
     <script type="module">
@@ -122,6 +142,10 @@
 </head>
 <body>
 
+    <div class="marquee-container hidden" id="marquee-container">
+        <div class="marquee-content" id="game-status-banner">SYSTEM INITIALIZING... | WAITING FOR ESP32...</div>
+    </div>
+
     <div id="dashboard-page">
         <h1 class="monopoly-title">MONOPOLY</h1>
         <h2 class="dashboard-subtitle">Dashboard</h2>
@@ -136,6 +160,11 @@
 
         <div class="status-container" id="statusContainer">
             Status: <span class="status-dot status-disconnected" id="statusDot">●</span> <span id="statusText">Waiting...</span>
+        </div>
+
+        <div class="players-header-container">
+            <h3 class="amasis-font">Player Balances</h3>
+            <button class="toggle-btn" id="togglePlayersBtn" onclick="togglePlayers()" style="padding: 5px 15px;">Hide ▲</button>
         </div>
 
         <div id="dashboard-players"></div>
@@ -186,103 +215,43 @@
         </div>
         <div class="placeholder-text">
             <b>Monopoly ESP32 Project</b><br><br>
-            Cloud Synced via Firebase.
+            Cloud Synced via Firebase. Supports up to 7 Players!
+        </div>
+    </div>
+
+    <div id="name-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h2 class="amasis-font" id="modal-title">PLAYER 1 NAME</h2>
+            <p>Please enter the display name.</p>
+            <p style="font-size:0.8rem; color:#666;">(Press ENTER to confirm)</p>
+            <input type="text" id="modal-input" class="modal-input" placeholder="Name..." autocomplete="off">
         </div>
     </div>
 
     <script>
         // ==========================================
-        // ROLE MANAGEMENT & CLOUD SYNC LOGIC
+        // GAME STATE VARIABLES
         // ==========================================
         let isHost = true; 
+        let currentMode = -1; // 0 = Standard, 1 = Blitz
+        let currentTurnIdx = -1;
+        let currentReqName = -1;
+        let lastNameCmdTs = 0;
+        let lastParsedDataObj = {};
 
-        function logDebug(message) {
-            const logger = document.getElementById('debugLog');
-            logger.innerText = "⏳ " + new Date().toLocaleTimeString() + "\n" + message;
-        }
-
-        function setRole(role) {
-            const btnHost = document.getElementById('role-host');
-            const btnPlayer = document.getElementById('role-player');
-            const bleBtn = document.getElementById('bleConnectBtn');
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
-
-            if (role === 'host') {
-                isHost = true;
-                btnHost.classList.add('active');
-                btnPlayer.classList.remove('active');
-                bleBtn.classList.remove('hidden'); 
-                statusDot.className = 'status-dot status-disconnected';
-                statusText.innerText = 'Disconnected (Waiting for ESP32)';
-                logDebug("Switched to Host Mode. Click Connect ESP32.");
-            } else {
-                isHost = false;
-                btnHost.classList.remove('active');
-                btnPlayer.classList.add('active');
-                bleBtn.classList.add('hidden'); 
-                
-                statusDot.className = 'status-dot status-cloud';
-                statusText.innerText = 'Syncing from Cloud...';
-                logDebug("Switched to Player Mode. Waiting for Cloud Data...");
-                startCloudListener();
-            }
-        }
-
-        function uploadToCloud(jsonData) {
-            if (!isHost || !window.firebaseDB) return;
-            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
-            window.firebaseSet(dbRef, JSON.parse(jsonData)).catch(e => console.error("Cloud Upload Failed:", e));
-        }
-
-        let isListening = false;
-        function startCloudListener() {
-            if (isListening || !window.firebaseDB) return;
-            isListening = true;
-            
-            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
-            window.firebaseOnValue(dbRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data && !isHost) {
-                    parseIncomingData(JSON.stringify(data)); 
-                    document.getElementById('statusText').innerText = 'Synced with Cloud ✅';
-                }
-            });
-        }
-
-        function showPage(pageId) {
-            document.querySelectorAll('.page, #dashboard-page').forEach(el => el.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-        }
-
-        function switchPropertyView(view) {
-            const gridView = document.getElementById('properties-grid');
-            const scrollView = document.getElementById('properties-scroll');
-            const btnGrid = document.getElementById('btn-grid-view');
-            const btnScroll = document.getElementById('btn-scroll-view');
-
-            if (view === 'grid') {
-                gridView.classList.remove('hidden'); scrollView.classList.add('hidden');
-                btnGrid.classList.add('active'); btnScroll.classList.remove('active');
-            } else {
-                gridView.classList.add('hidden'); scrollView.classList.remove('hidden');
-                btnGrid.classList.remove('active'); btnScroll.classList.add('active');
-            }
-        }
-
-        // ==========================================
-        // DATA ARRAYS
-        // ==========================================
         let playersDatabase = [
-            { id: 1, name: "Player 1 (Erl)", balance: 1500, time: "10:00" },
-            { id: 2, name: "Player 2", balance: 1500, time: "10:00" },
-            { id: 3, name: "Player 3", balance: 1500, time: "10:00" },
-            { id: 4, name: "Player 4", balance: 1500, time: "10:00" }
+            { id: 1, name: "Player 1", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 2, name: "Player 2", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 3, name: "Player 3", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 4, name: "Player 4", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 5, name: "Player 5", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 6, name: "Player 6", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false },
+            { id: 7, name: "Player 7", balance: 1500, timeSecs: 0, inGame: true, isBankrupt: false }
         ];
 
         let propertiesDatabase = [
             { name: "OLD KENT ROAD", type: "street", color: "#8B4513", price: 60, r0: 2, r1: 10, r2: 30, r3: 90, r4: 160, r5: 250, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
-            { name: "WHITECHAPEL ROAD", type: "street", color: "#8B4513", price: 60, r0: 4, r1: 20, r2: 60, r3: 180, r4: 320, r5: 450, houseCost: 50, housesOwned: 1, ownerIndex: -1 },
+            { name: "WHITECHAPEL ROAD", type: "street", color: "#8B4513", price: 60, r0: 4, r1: 20, r2: 60, r3: 180, r4: 320, r5: 450, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
             { name: "THE ANGEL ISLINGTON", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
             { name: "EUSTON ROAD", type: "street", color: "#87CEEB", price: 100, r0: 6, r1: 30, r2: 90, r3: 270, r4: 400, r5: 550, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
             { name: "PENTONVILLE ROAD", type: "street", color: "#87CEEB", price: 120, r0: 8, r1: 40, r2: 100, r3: 300, r4: 450, r5: 600, houseCost: 50, housesOwned: 0, ownerIndex: -1 },
@@ -312,7 +281,193 @@
         ];
 
         // ==========================================
-        // WEB BLUETOOTH (HOST ONLY) w/ MTU BYPASS
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function logDebug(message) {
+            const logger = document.getElementById('debugLog');
+            logger.innerText = "⏳ " + new Date().toLocaleTimeString() + "\n" + message;
+        }
+
+        function formatTime(seconds) {
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        function getOwnerDetails(index) {
+            if (index >= 0 && index < 7) {
+                return { name: playersDatabase[index].name, css: "owner-p" + (index + 1) };
+            }
+            return { name: "Bank", css: "owner-bank" };
+        }
+
+        // ==========================================
+        // UI TOGGLES
+        // ==========================================
+        function togglePlayers() {
+            const playersGrid = document.getElementById('dashboard-players');
+            const toggleBtn = document.getElementById('togglePlayersBtn');
+            if (playersGrid.classList.contains('hidden')) {
+                playersGrid.classList.remove('hidden');
+                toggleBtn.innerText = "Hide ▲";
+            } else {
+                playersGrid.classList.add('hidden');
+                toggleBtn.innerText = "Show ▼";
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page, #dashboard-page').forEach(el => el.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            if(pageId === 'dashboard-page') document.getElementById('marquee-container').classList.remove('hidden');
+            else document.getElementById('marquee-container').classList.add('hidden');
+        }
+
+        function switchPropertyView(view) {
+            const gridView = document.getElementById('properties-grid');
+            const scrollView = document.getElementById('properties-scroll');
+            const btnGrid = document.getElementById('btn-grid-view');
+            const btnScroll = document.getElementById('btn-scroll-view');
+
+            if (view === 'grid') {
+                gridView.classList.remove('hidden'); scrollView.classList.add('hidden');
+                btnGrid.classList.add('active'); btnScroll.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden'); scrollView.classList.remove('hidden');
+                btnGrid.classList.remove('active'); btnScroll.classList.add('active');
+            }
+        }
+
+        // ==========================================
+        // ROLE MANAGEMENT & CLOUD SYNC LOGIC
+        // ==========================================
+        function setRole(role) {
+            const btnHost = document.getElementById('role-host');
+            const btnPlayer = document.getElementById('role-player');
+            const bleBtn = document.getElementById('bleConnectBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            if (role === 'host') {
+                isHost = true;
+                btnHost.classList.add('active');
+                btnPlayer.classList.remove('active');
+                bleBtn.classList.remove('hidden'); 
+                statusDot.className = 'status-dot status-disconnected';
+                statusText.innerText = 'Disconnected (Waiting for ESP32)';
+                logDebug("Switched to Host Mode. Click Connect ESP32.");
+                document.getElementById('marquee-container').classList.remove('hidden');
+
+                // Host listens to name change requests from WiFi players
+                if(window.firebaseDB) {
+                    window.firebaseOnValue(window.firebaseRef(window.firebaseDB, 'monopoly/name_cmd'), (snapshot) => {
+                        const val = snapshot.val();
+                        if(val && val.ts > lastNameCmdTs) {
+                            lastNameCmdTs = val.ts;
+                            playersDatabase[val.idx].name = val.name;
+                            sendNameUpdate(val.idx, val.name); // Push to ESP32!
+                            renderDashboardPlayers();
+                        }
+                    });
+                }
+            } else {
+                isHost = false;
+                btnHost.classList.remove('active');
+                btnPlayer.classList.add('active');
+                bleBtn.classList.add('hidden'); 
+                statusDot.className = 'status-dot status-cloud';
+                statusText.innerText = 'Syncing from Cloud...';
+                logDebug("Switched to Player Mode. Waiting for Cloud Data...");
+                document.getElementById('marquee-container').classList.remove('hidden');
+                startCloudListener();
+            }
+        }
+
+        function uploadToCloud() {
+            if (!isHost || !window.firebaseDB) return;
+            try {
+                // Attach our locally managed names so WiFi players see them
+                lastParsedDataObj.names = playersDatabase.map(p => p.name);
+                const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
+                window.firebaseSet(dbRef, lastParsedDataObj).catch(e => console.error("Cloud Upload Failed:", e));
+            } catch(e) {}
+        }
+
+        let isListening = false;
+        function startCloudListener() {
+            if (isListening || !window.firebaseDB) return;
+            isListening = true;
+            const dbRef = window.firebaseRef(window.firebaseDB, 'monopoly/gamestate');
+            window.firebaseOnValue(dbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data && !isHost) {
+                    // Pull down synced names from the Host
+                    if (data.names) {
+                        data.names.forEach((n, i) => { if(playersDatabase[i]) playersDatabase[i].name = n; });
+                    }
+                    parseIncomingData(JSON.stringify(data)); 
+                    document.getElementById('statusText').innerText = 'Synced with Cloud ✅';
+                }
+            });
+        }
+
+        // ==========================================
+        // PLAYER NAME MANAGEMENT (MODAL & DASHBOARD)
+        // ==========================================
+        window.editPlayerName = function(idx) {
+            let current = playersDatabase[idx].name;
+            let newName = prompt(`Enter new name for Player ${idx + 1}`, current);
+            if (newName && newName.trim() !== "") {
+                playersDatabase[idx].name = newName.trim().toUpperCase();
+                sendNameUpdate(idx, newName.trim().toUpperCase());
+                renderDashboardPlayers();
+                renderProperties(); // Update owner banners
+            }
+        }
+
+        window.sendNameUpdate = function(idx, name) {
+            if (isHost) {
+                // Host sends directly to ESP32
+                if (myBleCharacteristic) {
+                    const payload = "N:" + idx + ":" + name;
+                    myBleCharacteristic.writeValue(new TextEncoder().encode(payload)).catch(e => console.error(e));
+                }
+                uploadToCloud();
+            } else if (!isHost && window.firebaseDB) {
+                // WiFi players queue a command in Firebase for the Host to fulfill
+                const cmdRef = window.firebaseRef(window.firebaseDB, 'monopoly/name_cmd');
+                window.firebaseSet(cmdRef, { idx: idx, name: name, ts: Date.now() });
+            }
+        }
+
+        // The Un-closable Naming Modal
+        function showNameModal(idx) {
+            if(currentReqName === idx) return; // Prevent re-triggering if already open for this player
+            currentReqName = idx;
+            document.getElementById('modal-title').innerText = `PLAYER ${idx + 1} NAME`;
+            const input = document.getElementById('modal-input');
+            input.value = "";
+            document.getElementById('name-modal').classList.remove('hidden');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function hideNameModal() {
+            document.getElementById('name-modal').classList.add('hidden');
+            currentReqName = -1;
+        }
+
+        document.getElementById('modal-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const newName = this.value.trim().toUpperCase() || `PLAYER ${currentReqName + 1}`;
+                playersDatabase[currentReqName].name = newName;
+                sendNameUpdate(currentReqName, newName);
+                renderDashboardPlayers();
+                hideNameModal();
+            }
+        });
+
+        // ==========================================
+        // WEB BLUETOOTH (HOST ONLY)
         // ==========================================
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
         const CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
@@ -320,13 +475,11 @@
 
         document.getElementById('bleConnectBtn').addEventListener('click', async () => {
             if(!isHost) return;
-
             try {
                 document.getElementById('statusText').innerText = "Searching...";
                 logDebug("Asking Windows for permission to scan...");
 
                 if (myBleDevice && myBleDevice.gatt && !myBleDevice.gatt.connected) {
-                    logDebug('Reconnecting to previously paired device...');
                     await executeBLEConnection();
                     return;
                 }
@@ -346,23 +499,16 @@
             }
         });
 
-        // The Forceful "Long Read" Function to Bypass MTU Truncation
         async function fetchFullDataFromESP32() {
             try {
-                logDebug("Forcing Long Read from ESP32 Memory...");
                 const value = await myBleCharacteristic.readValue();
                 const decoder = new TextDecoder('utf-8');
                 const rawJson = decoder.decode(value).replace(/\0/g, '').trim();
                 
                 if (rawJson.startsWith('{') && rawJson.endsWith('}')) {
-                    logDebug("✅ SUCCESS! Full Data Downloaded:\n" + rawJson);
                     parseIncomingData(rawJson); 
-                    uploadToCloud(rawJson);     
-                } else if (rawJson.length > 0) {
-                    logDebug("⚠️ WARNING: Data is corrupted/cut off:\n" + rawJson);
-                } else {
-                    logDebug("ℹ️ Data is completely empty. Waiting for ESP32 to save a game state...");
-                }
+                    uploadToCloud();     
+                } 
             } catch (error) {
                 logDebug("❌ Read failed. " + error.message);
             }
@@ -371,31 +517,23 @@
         async function executeBLEConnection() {
             document.getElementById('statusText').innerText = "Connecting to Server...";
             const server = await myBleDevice.gatt.connect();
-            
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            document.getElementById('statusText').innerText = "Getting Services...";
             const service = await server.getPrimaryService(SERVICE_UUID);
             myBleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
 
             document.getElementById('statusText').innerText = "Syncing Data...";
-
-            // 1. Force the first read
             await fetchFullDataFromESP32();
-
-            // 2. Listen for "Pings" from the ESP32 to force new reads
             await myBleCharacteristic.startNotifications();
             
             let isReading = false;
             myBleCharacteristic.addEventListener('characteristicvaluechanged', async (event) => {
-                logDebug("🔔 Ping received from ESP32! Data changed.");
                 if(isReading) return;
                 isReading = true;
                 await fetchFullDataFromESP32();
                 isReading = false;
             });
 
-            // Update UI
             document.getElementById('statusDot').className = 'status-dot status-connected';
             document.getElementById('statusText').innerText = "Connected to ESP32";
             document.getElementById('bleConnectBtn').innerText = "ESP32 Synced";
@@ -415,8 +553,20 @@
         function parseIncomingData(jsonString) {
             try {
                 const esp32Data = JSON.parse(jsonString);
+                lastParsedDataObj = esp32Data;
                 
-                // This adapts whether your Arduino says "bal" OR "players"!
+                // Track Turn & Mode
+                if(esp32Data.md !== undefined) currentMode = esp32Data.md;
+                if(esp32Data.turn !== undefined) currentTurnIdx = esp32Data.turn;
+
+                // Sync Modals for names
+                if(esp32Data.req_name !== undefined && esp32Data.req_name >= 0 && esp32Data.req_name < 7) {
+                    showNameModal(esp32Data.req_name);
+                } else {
+                    hideNameModal();
+                }
+
+                // Parse Balances
                 if(esp32Data.bal) {
                     esp32Data.bal.forEach((balance, index) => {
                         if(playersDatabase[index]) playersDatabase[index].balance = balance;
@@ -426,8 +576,25 @@
                         if(playersDatabase[index]) playersDatabase[index].balance = balance;
                     });
                 }
+
+                // Parse Live Time, InGame, and Bankrupt
+                if(esp32Data.tm) {
+                    esp32Data.tm.forEach((timeSec, index) => {
+                        if(playersDatabase[index]) playersDatabase[index].timeSecs = timeSec;
+                    });
+                }
+                if(esp32Data.in) {
+                    esp32Data.in.forEach((inStatus, index) => {
+                        if(playersDatabase[index]) playersDatabase[index].inGame = inStatus;
+                    });
+                }
+                if(esp32Data.bk) {
+                    esp32Data.bk.forEach((bkStatus, index) => {
+                        if(playersDatabase[index]) playersDatabase[index].isBankrupt = bkStatus;
+                    });
+                }
                 
-                // This adapts whether your Arduino says "own/hs" OR "p"!
+                // Parse Properties
                 if(esp32Data.own && esp32Data.hs) {
                     esp32Data.own.forEach((ownerId, index) => {
                         if(propertiesDatabase[index]) {
@@ -444,33 +611,55 @@
                     });
                 }
                 
+                updateMarqueeBanner();
                 renderDashboardPlayers();
                 renderProperties();
             } catch(e) {
                 console.error("Failed parsing JSON:", e);
-                logDebug("❌ Failed to parse JSON to UI: " + e.message);
             }
         }
 
-        function getOwnerDetails(index) {
-            if (index === 0) return { name: "Player 1", css: "owner-p1" };
-            if (index === 1) return { name: "Player 2", css: "owner-p2" };
-            if (index === 2) return { name: "Player 3", css: "owner-p3" };
-            if (index === 3) return { name: "Player 4", css: "owner-p4" };
-            return { name: "Bank", css: "owner-bank" };
+        function updateMarqueeBanner() {
+            const banner = document.getElementById('game-status-banner');
+            const modeText = currentMode === 1 ? "🔥 BLITZ MODE 🔥" : (currentMode === 0 ? "🎲 STANDARD MODE 🎲" : "⚙️ WAITING FOR SETUP ⚙️");
+            
+            let turnText = " | WAITING TO START...";
+            if (currentTurnIdx >= 0 && currentTurnIdx < 7 && playersDatabase[currentTurnIdx]) {
+                turnText = ` | 👉 CURRENT TURN: ${playersDatabase[currentTurnIdx].name.toUpperCase()}'S TURN 👈`;
+            }
+
+            banner.innerText = modeText + turnText + " \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 " + modeText + turnText;
         }
 
         function renderDashboardPlayers() {
             const container = document.getElementById('dashboard-players');
             container.innerHTML = '';
-            playersDatabase.forEach(player => {
+            playersDatabase.forEach((player, index) => {
+                if (!player.inGame) return; // Hide players not in the game
+
+                if (player.isBankrupt) {
+                    const bankruptCard = `
+                        <div class="dashboard-player-card" style="background: black; color: white; border-color: #444; opacity: 0.8;">
+                            <div class="dashboard-player-name amasis-font" style="text-shadow: none;">${player.name}</div>
+                            <div class="dashboard-player-balance amasis-font" style="color: #ff3333; font-size: 1.2rem; margin-top: 15px;">
+                                YOU'RE BANKRUPT!
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += bankruptCard;
+                    return;
+                }
+
+                // Highlight the active turn
+                let activeClass = (currentTurnIdx === index) ? 'active-turn' : '';
+                
                 const playerCard = `
-                    <div class="dashboard-player-card">
-                        <div class="dashboard-player-name amasis-font">${player.name}</div>
+                    <div class="dashboard-player-card ${activeClass}">
+                        <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
                         <div class="dashboard-player-balance amasis-font">
                             $${player.balance}
                             <div>
-                                <div class="dashboard-player-time">${player.time}</div>
+                                <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
                             </div>
                         </div>
                     </div>
@@ -479,6 +668,20 @@
             });
         }
 
+        // --- LOCAL TIMER TICKING ENGINE ---
+        setInterval(() => {
+            if (currentMode === 1 && currentTurnIdx >= 0 && currentTurnIdx < 7) {
+                const activePlayer = playersDatabase[currentTurnIdx];
+                if (activePlayer && activePlayer.inGame && !activePlayer.isBankrupt) {
+                    if (activePlayer.timeSecs > 0) {
+                        activePlayer.timeSecs--;
+                        const timeEl = document.getElementById(`player-time-${currentTurnIdx}`);
+                        if (timeEl) timeEl.innerText = formatTime(activePlayer.timeSecs);
+                    }
+                }
+            }
+        }, 1000);
+
         function createCardHTML(prop) {
             const mortgageValue = Math.floor(prop.price / 2);
             const unmortgageValue = mortgageValue + Math.floor((mortgageValue + 9) / 10);
@@ -486,10 +689,18 @@
             const isDarkHeader = ["#00008B", "#8B4513", "#008000", "#333"].includes(prop.color);
             const textColor = isDarkHeader ? 'white' : 'black';
 
+            // Check Ownership Count for Yellow highlights
+            let ownedCount = 0;
+            if (prop.ownerIndex !== -1) {
+                ownedCount = propertiesDatabase.filter(p => p.ownerIndex === prop.ownerIndex && p.type === prop.type).length;
+            }
+
             let innerBodyHTML = '';
 
             if (prop.type === "street") {
+                // Color Set Highlight implies NO houses, but they own the set (double rent)
                 const hlRent = prop.housesOwned === 0 ? 'highlight' : '';
+                // Since this UI is static text logic mostly, we highlight the exact row representing the state
                 const hlH1 = prop.housesOwned === 1 ? 'highlight' : '';
                 const hlH2 = prop.housesOwned === 2 ? 'highlight' : '';
                 const hlH3 = prop.housesOwned === 3 ? 'highlight' : '';
@@ -498,6 +709,7 @@
 
                 innerBodyHTML = `
                     <div class="rent-row ${hlRent}"><span>Rent</span> <b>$${prop.r0}</b></div>
+                    <div class="rent-row" style="color:#ce1126;"><span>With COLOR SET</span> <b>$${prop.r0 * 2}</b></div>
                     <div class="rent-row ${hlH1}"><span>With 1 House</span> <b>$${prop.r1}</b></div>
                     <div class="rent-row ${hlH2}"><span>With 2 Houses</span> <b>$${prop.r2}</b></div>
                     <div class="rent-row ${hlH3}"><span>With 3 Houses</span> <b>$${prop.r3}</b></div>
@@ -509,12 +721,17 @@
                     </div>
                 `;
             } else if (prop.type === "station") {
+                const hl1 = ownedCount === 1 ? 'highlight' : '';
+                const hl2 = ownedCount === 2 ? 'highlight' : '';
+                const hl3 = ownedCount === 3 ? 'highlight' : '';
+                const hl4 = ownedCount === 4 ? 'highlight' : '';
+
                 innerBodyHTML = `
                     <br>
-                    <div class="rent-row"><span>Rent</span> <b>$25</b></div>
-                    <div class="rent-row"><span>2 stations</span> <b>$50</b></div>
-                    <div class="rent-row"><span>3 stations</span> <b>$100</b></div>
-                    <div class="rent-row"><span>4 stations</span> <b>$200</b></div>
+                    <div class="rent-row ${hl1}"><span>Rent</span> <b>$25</b></div>
+                    <div class="rent-row ${hl2}"><span>2 stations</span> <b>$50</b></div>
+                    <div class="rent-row ${hl3}"><span>3 stations</span> <b>$100</b></div>
+                    <div class="rent-row ${hl4}"><span>4 stations</span> <b>$200</b></div>
                     <div class="card-footer">
                         <div>Mortg. $${mortgageValue} / Unmortg. $${unmortgageValue}</div>
                     </div>
@@ -526,11 +743,15 @@
                 } else if (prop.name === "WATER WORKS") {
                     utilityIcon = `<div style="margin: 10px 0; text-align: center;"><svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h12a2 2 0 0 1 2 2v2"></path><path d="M12 8V5h3"></path><path d="M19 15v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3"></path><path d="M17 22v.01"></path></svg></div>`;
                 }
+
+                const hl1 = ownedCount === 1 ? 'highlight' : '';
+                const hl2 = ownedCount === 2 ? 'highlight' : '';
+
                 innerBodyHTML = `
                     ${utilityIcon}
                     <div style="padding: 10px; text-align: left; flex-grow: 1;">
-                        1 Utility = <b>4x</b> dice roll.<br><br>
-                        2 Utilities = <b>10x</b> dice roll.
+                        <div class="rent-row ${hl1}">1 Utility = <b>4x</b> dice</div>
+                        <div class="rent-row ${hl2}" style="margin-top:5px;">2 Utilities = <b>10x</b> dice</div>
                     </div>
                     <div class="card-footer">
                         <div>Mortg. $${mortgageValue} / Unmortg. $${unmortgageValue}</div>
@@ -568,7 +789,16 @@
             const scrollContainer = document.getElementById('properties-scroll');
             scrollContainer.innerHTML = '';
 
-            const groups = { "-1": { title: "The Bank", props: [] }, "0": { title: "Player 1", props: [] }, "1": { title: "Player 2", props: [] }, "2": { title: "Player 3", props: [] }, "3": { title: "Player 4", props: [] } };
+            const groups = { 
+                "-1": { title: "The Bank", props: [] }, 
+                "0": { title: playersDatabase[0].name, props: [] }, 
+                "1": { title: playersDatabase[1].name, props: [] }, 
+                "2": { title: playersDatabase[2].name, props: [] }, 
+                "3": { title: playersDatabase[3].name, props: [] },
+                "4": { title: playersDatabase[4].name, props: [] },
+                "5": { title: playersDatabase[5].name, props: [] },
+                "6": { title: playersDatabase[6].name, props: [] }
+            };
 
             propertiesDatabase.forEach(prop => {
                 if (groups[prop.ownerIndex]) groups[prop.ownerIndex].props.push(prop);
@@ -601,6 +831,8 @@
         window.onload = () => {
             renderProperties();
             renderDashboardPlayers();
+            // Default setup view
+            document.getElementById('marquee-container').classList.remove('hidden');
         };
     </script>
 </body>
