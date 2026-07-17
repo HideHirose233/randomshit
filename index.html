@@ -621,7 +621,7 @@
 
         function updateMarqueeBanner() {
             const banner = document.getElementById('game-status-banner');
-            const modeText = currentMode === 1 ? "🔥 BLITZ MODE 🔥" : (currentMode === 0 ? "🎲 STANDARD MODE 🎲" : "⚙️ WAITING FOR SETUP ⚙️");
+            const modeText = currentMode === 2 ? "🔥 BLITZ MODE 🔥" : (currentMode === 1 ? "🎲 STANDARD MODE 🎲" : "⚙️ WAITING FOR SETUP ⚙️");
             
             let turnText = " | WAITING TO START...";
             if (currentTurnIdx >= 0 && currentTurnIdx < 7 && playersDatabase[currentTurnIdx]) {
@@ -670,7 +670,7 @@
 
         // --- LOCAL TIMER TICKING ENGINE ---
         setInterval(() => {
-            if (currentMode === 1 && currentTurnIdx >= 0 && currentTurnIdx < 7) {
+            if (currentMode === 2 && currentTurnIdx >= 0 && currentTurnIdx < 7) {
                 const activePlayer = playersDatabase[currentTurnIdx];
                 if (activePlayer && activePlayer.inGame && !activePlayer.isBankrupt) {
                     if (activePlayer.timeSecs > 0) {
