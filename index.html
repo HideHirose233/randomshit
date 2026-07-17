@@ -108,7 +108,7 @@
         .placeholder-text { text-align: center; padding: 50px; font-size: 1.2rem; color: #666; }
 
         /* --- MODAL DIALOG (UN-CLOSABLE) --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-box { background: #f4f0ec; color: black; padding: 30px; border: 6px solid #ce1126; border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(206, 17, 38, 0.6); width: 90%; max-width: 450px; }
         .modal-box h2 { font-size: 2rem; margin-bottom: 10px; text-transform: uppercase; color: #ce1126;}
         .modal-box p { font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
@@ -440,6 +440,13 @@
             document.getElementById('name-edit-input').value = playersDatabase[idx].name;
             document.getElementById('name-edit-modal').classList.remove('hidden');
             document.getElementById('name-edit-input').focus();
+            
+            // Add Enter key listener
+            document.getElementById('name-edit-input').onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    saveEditedName();
+                }
+            };
         }
         
         window.closeNameEditModal = function() {
