@@ -256,17 +256,6 @@
         window.firebaseOnValue = onValue;
         
         let previousState = null;
-        window.handleProfileUpload = function(event, index) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    localStorage.setItem('profilePic_' + index, evt.target.result);
-                    renderDashboardPlayers(); // Re-render to show new image instantly
-                };
-                reader.readAsDataURL(file);
-            }
-        };
 
         window.gameLogs = [{msg: "Live Tracking Initialized. Waiting for transactions...", time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), type: 'normal'}];
 
@@ -408,11 +397,14 @@
                     </div>
                     <b class="kabel-font">About</b>
                 </button>
-                <button class="menu-btn" onclick="showSoundModal()">
+                <button class="menu-btn" onclick="showPage('settings-page')">
                     <div class="menu-icon" style="margin-bottom: 5px;">
-                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#ce1126" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/></svg>
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#555" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
                     </div>
-                    <b class="kabel-font">Sounds</b>
+                    <b class="kabel-font">Settings</b>
                 </button>
             </div>
         </div>
@@ -457,17 +449,41 @@
         </div>
     </div>
 
-    <div id="sound-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <h2 class="kabel-font" style="margin-bottom: 20px;">MASTER VOLUME</h2>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px;">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="#ce1126" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
-                <input type="range" id="master-volume-modal" min="0" max="1" step="0.05" value="1" style="cursor: pointer; width: 60%; transform: scale(1.2);" oninput="updateVolume(this.value)">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    <div id="settings-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('dashboard-page')">⬅ Back</button>
+            <h2 class="page-title">Settings</h2>
+        </div>
+        <div style="padding: 20px; max-width: 600px; margin: 0 auto;">
+            <!-- MASTER VOLUME -->
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <h3 class="kabel-font" style="margin-bottom: 15px;">MASTER VOLUME</h3>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="#ce1126" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+                    <input type="range" id="master-volume-settings" min="0" max="1" step="0.05" value="1" style="cursor: pointer; width: 80%; transform: scale(1.2);" oninput="updateVolume(this.value)">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </div>
             </div>
-            <button class="menu-btn" style="width: 100%; aspect-ratio: auto; padding: 15px;" onclick="closeSoundModal()">
-                <b class="kabel-font" style="font-size: 1.5rem;">DONE</b>
-            </button>
+
+            <!-- MANAGE PICTURES -->
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 class="kabel-font" style="margin-bottom: 10px;">MANAGE PICTURES</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="add-pic-input" placeholder="e.g. Pictures/avatar1.png" style="flex: 1; padding: 8px; border-radius: 5px; border: none; color: black;">
+                    <button onclick="addAsset('pictures', document.getElementById('add-pic-input').value)" style="padding: 8px 15px; background: #00a850; color: white; border: 2px solid black; border-radius: 5px; cursor: pointer; font-weight: bold;">ADD</button>
+                </div>
+                <ul id="settings-pic-list" style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto; background: white; color: black; border-radius: 5px;"></ul>
+            </div>
+
+            <!-- MANAGE MUSIC -->
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 class="kabel-font" style="margin-bottom: 10px;">MANAGE MUSIC</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="add-music-input" placeholder="e.g. Music/song1.mp3" style="flex: 1; padding: 8px; border-radius: 5px; border: none; color: black;">
+                    <button onclick="addAsset('music', document.getElementById('add-music-input').value)" style="padding: 8px 15px; background: #ff8c00; color: white; border: 2px solid black; border-radius: 5px; cursor: pointer; font-weight: bold;">ADD</button>
+                </div>
+                <ul id="settings-music-list" style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto; background: white; color: black; border-radius: 5px;"></ul>
+            </div>
         </div>
     </div>
 
@@ -496,12 +512,16 @@
             </div>
             <div style="font-size: 14px; margin-bottom: 10px;" id="name-edit-prompt-text">Enter new name:</div>
             <input type="text" id="name-edit-input" maxlength="10" style="width: 100%; padding: 5px; font-size: 14px; border: 1px solid #0078D7; margin-bottom: 5px; box-sizing: border-box;">
+            
             <label style="font-size: 12px; margin-bottom: 5px; display: block;">Card Color:</label>
             <input type="color" id="name-edit-color" value="#ffffff" style="width: 100%; height: 30px; border: none; padding: 0; cursor: pointer; margin-bottom: 15px;">
-            <label style="font-size: 12px; margin-bottom: 5px; display: block;">Theme Music File (Blitz Mode, Optional):</label>
-            <input type="file" id="name-edit-music-file" accept="audio/*" style="margin-bottom: 5px; width: 100%;">
-            <div id="current-music-display" style="font-size: 11px; margin-bottom: 15px; color: #666;"></div>
-            <input type="hidden" id="name-edit-music">
+            
+            <label style="font-size: 12px; margin-bottom: 5px; display: block;">Profile Picture Path:</label>
+            <select id="name-edit-avatar-url" style="width: 100%; padding: 5px; font-size: 12px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box;"></select>
+            
+            <label style="font-size: 12px; margin-bottom: 5px; display: block;">Theme Music Path:</label>
+            <select id="name-edit-music-url" style="width: 100%; padding: 5px; font-size: 12px; border: 1px solid #ccc; margin-bottom: 15px; box-sizing: border-box;"></select>
+            
             <input type="hidden" id="name-edit-idx">
             <div style="text-align: right;">
                 <button onclick="saveEditedName()" style="background: #e1e1e1; border: 1px solid #adadad; padding: 4px 15px; margin-right: 5px; cursor: pointer; border-radius: 2px;">OK</button>
@@ -701,16 +721,31 @@
                     if (window.playerProfiles[i]) {
                         playersDatabase[i].name = window.playerProfiles[i].name || playersDatabase[i].name;
                         playersDatabase[i].color = window.playerProfiles[i].color || '#ffffff';
+                        playersDatabase[i].music = window.playerProfiles[i].music || '';
+                        playersDatabase[i].avatar = window.playerProfiles[i].avatar || '';
                     } else {
                         // Reset defaults if removed
                         playersDatabase[i].name = "PLAYER " + (i+1);
                         playersDatabase[i].color = "#ffffff";
+                        playersDatabase[i].music = '';
+                        playersDatabase[i].avatar = '';
                     }
                 }
                 if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
                 if (typeof window.renderProperties === 'function') window.renderProperties();
             });
             
+            const assetsRef = window.firebaseRef(window.firebaseDB, 'gameState/assetLists');
+            window.firebaseOnValue(assetsRef, (snapshot) => {
+                const lists = snapshot.val();
+                if (lists) {
+                    window.assetLists = { pictures: lists.pictures || [], music: lists.music || [] };
+                } else {
+                    window.assetLists = { pictures: [], music: [] };
+                }
+                if (typeof window.renderAssetLists === 'function') window.renderAssetLists();
+            });
+
             const logsRef = window.firebaseRef(window.firebaseDB, 'gameState/logs');
             window.firebaseOnValue(logsRef, (snapshot) => {
                 const logs = snapshot.val();
@@ -735,10 +770,16 @@
             document.getElementById('name-edit-prompt-text').innerText = `Enter new name for Player ${idx + 1}`;
             document.getElementById('name-edit-input').value = playersDatabase[idx].name;
             document.getElementById('name-edit-color').value = playersDatabase[idx].color || '#ffffff';
-            let cm = playersDatabase[idx].music || '';
-            document.getElementById('name-edit-music').value = cm;
-            document.getElementById('current-music-display').innerText = cm ? 'Current: ' + cm : 'No music selected';
-            document.getElementById('name-edit-music-file').value = '';
+            
+            // Populate select dropdowns
+            const avatarSelect = document.getElementById('name-edit-avatar-url');
+            avatarSelect.innerHTML = '<option value="">None</option>' + (window.assetLists.pictures || []).map(p => `<option value="${p}">${p}</option>`).join('');
+            avatarSelect.value = playersDatabase[idx].avatar || '';
+
+            const musicSelect = document.getElementById('name-edit-music-url');
+            musicSelect.innerHTML = '<option value="">None</option>' + (window.assetLists.music || []).map(m => `<option value="${m}">${m}</option>`).join('');
+            musicSelect.value = playersDatabase[idx].music || '';
+            
             document.getElementById('name-edit-modal').classList.remove('hidden');
             document.getElementById('name-edit-input').focus();
             
@@ -758,16 +799,15 @@
             const idx = parseInt(document.getElementById('name-edit-idx').value);
             const inputVal = document.getElementById('name-edit-input').value;
             const colorVal = document.getElementById('name-edit-color').value;
-            let musicVal = document.getElementById('name-edit-music').value.trim();
-            let fileInput = document.getElementById('name-edit-music-file');
-            if (fileInput.files.length > 0) {
-                musicVal = 'Music/' + fileInput.files[0].name;
-            }
+            
+            let musicVal = document.getElementById('name-edit-music-url').value.trim();
+            let avatarVal = document.getElementById('name-edit-avatar-url').value.trim();
+            
             if (inputVal && inputVal.trim() !== "") {
                 const cleanedName = inputVal.trim().substring(0, 10).toUpperCase();
                 
                 if (!window.playerProfiles) window.playerProfiles = {};
-                window.playerProfiles[idx] = { name: cleanedName, color: colorVal, music: musicVal };
+                window.playerProfiles[idx] = { name: cleanedName, color: colorVal, music: musicVal, avatar: avatarVal };
                 
                 if (window.firebaseDB) {
                     const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles');
@@ -781,6 +821,7 @@
                 playersDatabase[idx].name = cleanedName;
                 playersDatabase[idx].color = colorVal;
                 playersDatabase[idx].music = musicVal;
+                playersDatabase[idx].avatar = avatarVal;
                 
                 if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
                 if (typeof window.renderProperties === 'function') window.renderProperties();
@@ -1022,12 +1063,11 @@
                     propsHtml += '</div>';
                 }
 
-                let profilePicSrc = localStorage.getItem('profilePic_' + index) || `profile_${index}.png`;
                 let fallbackAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=random&color=fff&size=45&bold=true`;
-                let avatarHtml = `<label for="avatar-upload-${index}" style="cursor: pointer; display: inline-block;" title="Click to change profile picture">
-                                    <input id="avatar-upload-${index}" type="file" style="display:none;" accept="image/*" onchange="window.handleProfileUpload(event, ${index})">
+                let profilePicSrc = player.avatar ? player.avatar : (localStorage.getItem('profilePic_' + index) || `profile_${index}.png`);
+                let avatarHtml = `<div style="cursor: pointer; display: inline-block;" title="Click to edit profile" onclick="editPlayerName(${index})">
                                     <img src="${profilePicSrc}" alt="${player.name}" class="player-avatar" style="cursor: pointer;" onerror="this.onerror=null; this.src='${fallbackAvatarUrl}';">
-                                  </label>`;
+                                  </div>`;
 
                 let crownHtml = (index === topPlayerIndex) ? `<span title="1st Place!" style="position: absolute; top: -15px; left: -15px; font-size: 2.2rem; transform: rotate(-25deg); text-shadow: 3px 3px 0 rgba(0,0,0,0.3); z-index: 20; pointer-events: none;">👑</span>` : '';
 
@@ -1271,14 +1311,43 @@
             });
         }
 
-        window.showSoundModal = function() {
-            const volInput = document.getElementById('master-volume-modal');
-            if (volInput) volInput.value = window.masterVolume;
-            document.getElementById('sound-modal').classList.remove('hidden');
+        window.assetLists = { pictures: [], music: [] };
+
+        window.addAsset = function(type, val) {
+            if (!val || val.trim() === '') return;
+            val = val.trim();
+            if (!window.assetLists[type]) window.assetLists[type] = [];
+            if (!window.assetLists[type].includes(val)) {
+                window.assetLists[type].push(val);
+                if (window.firebaseDB) {
+                    window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/assetLists'), window.assetLists);
+                }
+            }
+            if (type === 'pictures') document.getElementById('add-pic-input').value = '';
+            if (type === 'music') document.getElementById('add-music-input').value = '';
         };
-        
-        window.closeSoundModal = function() {
-            document.getElementById('sound-modal').classList.add('hidden');
+
+        window.removeAsset = function(type, val) {
+            if (!window.assetLists[type]) return;
+            window.assetLists[type] = window.assetLists[type].filter(item => item !== val);
+            if (window.firebaseDB) {
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/assetLists'), window.assetLists);
+            }
+        };
+
+        window.renderAssetLists = function() {
+            const picList = document.getElementById('settings-pic-list');
+            const musicList = document.getElementById('settings-music-list');
+            if (picList) {
+                picList.innerHTML = window.assetLists.pictures.map(p => `<li style="padding: 5px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;"><span>${p}</span> <button onclick="removeAsset('pictures', '${p}')" style="background: red; color: white; border: none; padding: 2px 8px; cursor: pointer; border-radius: 3px; font-weight: bold;">X</button></li>`).join('');
+            }
+            if (musicList) {
+                musicList.innerHTML = window.assetLists.music.map(m => `<li style="padding: 5px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;"><span>${m}</span> <button onclick="removeAsset('music', '${m}')" style="background: red; color: white; border: none; padding: 2px 8px; cursor: pointer; border-radius: 3px; font-weight: bold;">X</button></li>`).join('');
+            }
+            
+            // Sync settings master volume UI if open
+            const volInput = document.getElementById('master-volume-settings');
+            if (volInput) volInput.value = window.masterVolume;
         };
 
         window.onload = () => {
