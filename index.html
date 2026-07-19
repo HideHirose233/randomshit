@@ -12,6 +12,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Arial', sans-serif; background-color: #ce1126; color: white; min-height: 100vh; }
         b, strong, h1, h2, h3, .amasis-font { font-family: 'Amasis MT Pro', 'Times New Roman', serif; font-weight: bold; }
+        .kabel-font { font-family: 'TC Kabel', 'Kabel', 'Futura', sans-serif; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         .hidden { display: none !important; }
 
         /* --- MARQUEE BANNER --- */
@@ -20,14 +21,43 @@
         @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
         /* --- DASHBOARD PAGE --- */
-        #dashboard-page { display: flex; flex-direction: column; align-items: center; padding: 20px; text-align: center; }
-        .monopoly-title { font-size: 3.5rem; letter-spacing: 2px; margin-top: 10px; text-transform: uppercase; border: 4px solid white; padding: 10px 20px; background-color: #ce1126; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
+        #dashboard-page { padding: 20px; text-align: center; }
+        .monopoly-title { font-size: 3.5rem; letter-spacing: 2px; margin-top: 10px; text-transform: uppercase; border: 4px solid white; padding: 10px 20px; background-color: #ce1126; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); color: #ffd700; text-shadow: 2px 2px 0px #000; }
         .dashboard-subtitle { font-size: 1.5rem; margin-top: 10px; margin-bottom: 15px; letter-spacing: 5px; text-transform: uppercase; }
 
         /* --- ROLE SELECTOR --- */
-        .role-selector { background: white; color: black; padding: 15px; border-radius: 10px; border: 3px solid black; margin-bottom: 20px; box-shadow: 4px 4px 0 rgba(0,0,0,0.4); }
-        .role-btn { padding: 10px 20px; margin: 5px; font-size: 1rem; border: 2px solid black; cursor: pointer; border-radius: 5px; background: #eee; font-weight: bold; }
-        .role-btn.active { background: #ce1126; color: white; }
+        #role-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .role-btn {
+            background-color: #2b2d31;
+            color: #dcddde;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: 'Arial', sans-serif;
+            text-align: left;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .role-btn:hover { background-color: #404249; color: #fff; }
+
+        /* --- MINI PROPERTIES --- */
+        .mini-props-container { display: flex; flex-wrap: wrap; gap: 2px; justify-content: flex-start; align-content: flex-start; width: 100%; max-height: 90px; overflow: hidden; padding-right: 0px; margin-top: 15px; }
+        .mini-prop-card { flex: 0 0 calc(33.33% - 2px); max-width: calc(33.33% - 2px); border: 1px solid #000; border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 1px 1px 0 rgba(0,0,0,0.5); overflow: hidden; padding: 1px; color: #222; text-shadow: 0px 0px 1px rgba(255,255,255,0.7); font-weight: bold; background: #ffffff; line-height: 1; margin-bottom: 2px; }
+        .mini-prop-card.mortgaged { opacity: 0.6; border: 1px solid #555; }
+        .mini-prop-header { font-size: 0.45rem; line-height: 1.1; text-transform: uppercase; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 1px; }
+        .mini-prop-body { font-size: 0.45rem; white-space: nowrap; text-align: center; }
 
         /* --- STATUS BANNERS --- */
         .connect-btn { background-color: #000; color: #fff; border: 3px solid #fff; padding: 10px 25px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; margin-bottom: 15px; box-shadow: 4px 4px 0 rgba(0,0,0,0.4); text-transform: uppercase; }
@@ -38,8 +68,8 @@
         .status-cloud { color: #00bfff; text-shadow: 0 0 5px #00bfff; } 
 
         /* --- DASHBOARD PLAYERS LIST --- */
-        .players-header-container { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 10px; }
-        #dashboard-players { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 500px; margin-bottom: 30px; }
+        .players-header-container { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
+        
         .dashboard-player-card { background-color: #f4f0ec; color: black; border: 3px solid black; border-radius: 10px; padding: 15px 10px; text-align: center; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); transition: all 0.3s ease;}
         .dashboard-player-card.active-turn { border-color: #ffcc00; box-shadow: 0 0 20px #ffcc00, inset 0 0 10px rgba(255,204,0,0.5); transform: scale(1.03); z-index: 10;}
         .dashboard-player-name { font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; cursor: pointer; border-bottom: 1px dashed #666; display: inline-block; padding-bottom: 2px; }
@@ -50,8 +80,8 @@
         /* --- MENU BUTTONS --- */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
         .menu-btn { background-color: #f4f0ec; color: #ce1126; border: 4px solid black; border-radius: 15px; aspect-ratio: 1 / 1; font-size: 1.2rem; cursor: pointer; box-shadow: 0 6px 0px black; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.1s, box-shadow 0.1s; }
-        .menu-btn:first-child { grid-column: span 2; aspect-ratio: auto; padding: 30px; }
         .menu-btn:active { transform: translateY(6px); box-shadow: 0 0px 0px black; }
+        .menu-btn.no-bounce:active { transform: none; box-shadow: 0 6px 0px black; }
         .menu-icon { font-size: 3rem; margin-bottom: 10px; }
 
         /* --- LIVE DATA LOG --- */
@@ -114,7 +144,93 @@
         .modal-box p { font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
         .modal-input { width: 100%; padding: 15px; font-size: 1.5rem; text-align: center; border: 3px solid black; border-radius: 5px; text-transform: uppercase; font-family: 'Arial', sans-serif; font-weight: bold; outline: none;}
         .modal-input:focus { border-color: #ce1126; box-shadow: 0 0 10px rgba(206,17,38,0.5); }
-    </style>
+    
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        .rent-badge {
+            background: #FFD700;
+            color: #000;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        .mortgage-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            color: #ff3333;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #ff3333;
+            padding: 2px 5px;
+            text-transform: uppercase;
+            pointer-events: none;
+            background: rgba(0,0,0,0.8);
+        }
+
+    
+        /* --- MONOPOLY THEME LAYOUT --- */
+        #dashboard-page.discord-layout { display: flex; flex-direction: row; gap: 20px; width: 100%; min-height: 100vh; margin: 0; padding: 20px; align-items: stretch; justify-content: space-between; }
+        
+        .discord-log-sidebar { width: 320px; flex-grow: 1; max-width: 350px; background: #f4f0ec; padding: 15px; border-radius: 10px; color: black; border: 4px solid black; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 95vh; overflow: hidden; }
+        .log-header-container h3 { font-size: 1.3rem !important; color: black !important; font-family: 'Amasis MT Pro', 'Times New Roman', serif !important; border-bottom: 3px solid #ce1126 !important; padding-bottom: 5px !important; display: inline-block !important; letter-spacing: 2px !important; margin-bottom: 10px !important; font-weight: bold !important; }
+        
+        #game-log-container { background: #fff; flex: 1; border: 3px solid black; border-radius: 6px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; max-height: calc(95vh - 80px); gap: 10px; font-size: 0.9rem; font-family: 'Arial', sans-serif; }
+        #logList { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .log-entry { background: #ffffff; padding: 10px; border-radius: 5px; border: 2px solid black; border-left: 6px solid #2e8b57; line-height: 1.3; animation: fadeIn 0.3s ease-out; box-shadow: 2px 2px 0 rgba(0,0,0,0.2); font-weight: bold; }
+        .log-entry.log-bankrupt { border-left-color: #ce1126; color: #ce1126; background: #ffe6e6; }
+        .log-entry.log-property { border-left-color: #0a8a47; }
+        .log-time { font-size: 0.75rem; color: #555; margin-bottom: 2px; font-weight: bold; font-family: 'Share Tech Mono', monospace; }
+        
+        .discord-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; margin: 0 20px; }
+        .discord-sidebar { width: 320px; flex-grow: 1; max-width: 350px; background: #f4f0ec; padding: 15px 10px; border-radius: 10px; color: black; border: 4px solid black; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 900px) {
+            #dashboard-page.discord-layout { flex-direction: column; align-items: center; gap: 20px; }
+            .discord-sidebar, .discord-log-sidebar { width: 100%; max-width: 600px; }
+        }
+
+        .players-header-container { padding: 0 10px !important; margin-bottom: 10px !important; border-bottom: 3px solid #ce1126 !important; padding-bottom: 5px !important; display: inline-block !important; width: auto !important; align-self: flex-start !important; margin-left: 10px !important; }
+        .players-header-container h3 { font-size: 1.3rem !important; color: black !important; text-transform: uppercase !important; margin: 0 !important; font-family: 'Amasis MT Pro', 'Times New Roman', serif !important; font-weight: bold !important; letter-spacing: 2px !important; }
+
+        /* --- COMPACT PLAYER CARD (MONOPOLY STYLE) --- */
+        #dashboard-players { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 10px; padding: 0 5px; flex-grow: 1; overflow-y: auto; }
+        .dashboard-player-card { background-color: #e8e4d9; color: black; border: 3px solid black; border-radius: 10px; padding: 12px; text-align: left; box-shadow: 3px 3px 0 rgba(0,0,0,0.3); transition: box-shadow 0.2s ease, transform 0.2s; display: flex; flex-direction: column; position: relative; }
+        .dashboard-player-card:hover { transform: translateY(-2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.3); }
+        .dashboard-player-card.active-turn { border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00, 3px 3px 0 rgba(0,0,0,0.3); transform: scale(1.02); z-index: 10; }
+        
+        .player-card-header { display: flex; align-items: center; gap: 12px; }
+        .player-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid black; object-fit: cover; flex-shrink: 0; background-color: #ddd; box-shadow: 2px 2px 0 rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; }
+        .player-avatar:active { transform: scale(0.9); }
+        .player-info-col { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; line-height: 1.2; }
+        
+        .dashboard-player-name { font-size: 1.1rem !important; margin-bottom: 2px !important; cursor: pointer !important; display: inline-block !important; font-weight: bold !important; font-family: 'Amasis MT Pro', 'Times New Roman', serif !important; color: black !important; text-transform: uppercase !important; border: none !important; }
+        .dashboard-player-name:hover { text-decoration: underline !important; color: #ce1126 !important; }
+        
+        .dashboard-player-balance { color: #2e8b57 !important; font-size: 1.3rem !important; display: flex !important; justify-content: space-between !important; align-items: center !important; margin-top: 2px !important; font-family: 'Amasis MT Pro', 'Times New Roman', serif !important; font-weight: bold !important; }
+        .dashboard-player-time { font-family: 'Share Tech Mono', monospace !important; font-size: 1rem !important; color: #ff3333 !important; background: #111 !important; border: 2px solid black !important; padding: 2px 6px !important; box-shadow: inset 0px 0px 4px rgba(0,0,0,0.8) !important; border-radius: 4px !important; }
+
+        
+    
+        .mortgage-overlay { display: none; }
+    
+        .mini-prop-card.mortgaged { opacity: 0.5; filter: grayscale(100%); }
+</style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -138,53 +254,175 @@
         window.firebaseSet = set;
         window.firebaseRef = ref;
         window.firebaseOnValue = onValue;
+        
+        let previousState = null;
+        window.handleProfileUpload = function(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    localStorage.setItem('profilePic_' + index, evt.target.result);
+                    renderDashboardPlayers(); // Re-render to show new image instantly
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.gameLogs = [{msg: "Live Tracking Initialized. Waiting for transactions...", time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), type: 'normal'}];
+
+        window.exportGameLog = function() {
+            let text = "MONOPOLY GAME LOG\n-----------------\n";
+            window.gameLogs.slice().reverse().forEach(l => {
+                text += `[${l.time}] ${l.msg}\n`;
+            });
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Monopoly_Log_${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        window.clearGameLog = function() {
+            window.gameLogs = [{msg: "Logs Cleared", time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), type: 'normal'}];
+            if (currentMode === 0 && window.firebaseDB) {
+                try { window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/logs'), window.gameLogs); } catch(e) {}
+            }
+            window.renderLogs();
+        };
+
+        window.addGameLog = function(msg, type='normal') {
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            window.gameLogs.unshift({ msg, time, type }); // Add to top
+            if (window.gameLogs.length > 150) window.gameLogs.pop();
+            
+            // Only the Host syncs the new array to Firebase to prevent duplicates
+            if (currentMode === 0 && window.firebaseDB) {
+                try { window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/logs'), window.gameLogs); } catch(e) {}
+            }
+            window.renderLogs();
+        };
+
+        window.renderLogs = function() {
+            const container = document.getElementById('game-log-container');
+            if (!container) return;
+            container.innerHTML = window.gameLogs.map(l => {
+                let cssClass = 'log-entry';
+                if (l.type === 'bankrupt') cssClass += ' log-bankrupt';
+                if (l.type === 'property') cssClass += ' log-property';
+                return `<div class="${cssClass}"><div class="log-time">${l.time}</div><div>${l.msg}</div></div>`;
+            }).join('');
+        };
+
+        function diffGameState(oldState, newState) {
+            if (!oldState || !newState || !oldState.players || !newState.players) return;
+            
+            const pOld = oldState.players;
+            const pNew = newState.players;
+            
+            // Check properties bought
+            const propsOld = oldState.properties || [];
+            const propsNew = newState.properties || [];
+            propsNew.forEach((prop, i) => {
+                const oldProp = propsOld[i];
+                if (oldProp && oldProp.ownerIndex === -1 && prop.ownerIndex !== -1) {
+                    const pName = pNew[prop.ownerIndex].name;
+                    addGameLog(`${pName} bought ${prop.name}`, 'property');
+                }
+            });
+
+            // Check money changes (rent, payments)
+            let diffs = [];
+            for (let i = 0; i < 7; i++) {
+                if (pOld[i] && pNew[i]) {
+                    if (!pOld[i].isBankrupt && pNew[i].isBankrupt) {
+                        addGameLog(`${pNew[i].name} went BANKRUPT!`, 'bankrupt');
+                    } else if (!pNew[i].isBankrupt) {
+                        const balanceDiff = pNew[i].balance - pOld[i].balance;
+                        if (balanceDiff !== 0) {
+                            diffs.push({ idx: i, name: pNew[i].name, diff: balanceDiff });
+                        }
+                    }
+                }
+            }
+            
+            // Try to infer a 1-to-1 payment if there's a winner and loser of the same amount
+            if (diffs.length === 2) {
+                const p1 = diffs[0], p2 = diffs[1];
+                if (p1.diff === -p2.diff) {
+                    if (p1.diff < 0) addGameLog(`${p1.name} paid $${Math.abs(p1.diff)} to ${p2.name}`);
+                    else addGameLog(`${p2.name} paid $${Math.abs(p2.diff)} to ${p1.name}`);
+                    diffs = []; // handled
+                }
+            }
+            
+            // Fallback for independent money changes (passing GO, taxes, bank payments)
+            diffs.forEach(d => {
+                if (d.diff > 0) addGameLog(`${d.name} received $${d.diff}`);
+                else if (d.diff < 0) addGameLog(`${d.name} paid $${Math.abs(d.diff)}`);
+            });
+        }
     </script>
 </head>
 <body>
 
-    <div class="marquee-container hidden" id="marquee-container">
-        <div class="marquee-content" id="game-status-banner">SYSTEM INITIALIZING... | WAITING FOR ESP32...</div>
-    </div>
-
-    <div id="dashboard-page">
-        <h1 class="monopoly-title">MONOPOLY</h1>
-        <h2 class="dashboard-subtitle">Dashboard</h2>
-
-        <div class="role-selector">
-            <h3 style="margin-bottom: 10px;">Select Your Role</h3>
-            <button class="role-btn active" id="role-host" onclick="setRole('host')">I am the HOST (Bluetooth)</button>
-            <button class="role-btn" id="role-player" onclick="setRole('player')">I am a PLAYER (WiFi)</button>
+    <div id="dashboard-page" class="discord-layout">
+        <div class="discord-log-sidebar">
+            <div class="log-header-container" style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h3 class="amasis-font" style="font-size: 0.85rem; color: #949ba4; text-transform: uppercase; margin: 0; letter-spacing: 1px; padding-bottom: 5px; border-bottom: 1px solid #3f4147; margin-bottom: 10px;">Game Log</h3>
+                <div>
+                    <button onclick="window.resetCustomizations()" style="font-size: 0.6rem; padding: 2px 5px; cursor: pointer; border: 1px solid #000; background: #ffcc00; color: #000; border-radius: 3px; font-weight: bold; margin-right: 5px;">Reset Profiles</button>
+                    <button onclick="window.clearGameLog()" style="font-size: 0.6rem; padding: 2px 5px; cursor: pointer; border: 1px solid #ff3333; background: #ffe6e6; color: #ff3333; border-radius: 3px; font-weight: bold; margin-right: 5px;">Clear Logs</button>
+                    <button onclick="window.exportGameLog()" style="font-size: 0.6rem; padding: 2px 5px; cursor: pointer; border: 1px solid #333; background: #fff; border-radius: 3px; font-weight: bold;">Export .txt</button>
+                </div>
+            </div>
+            <div id="game-log-container">
+                <ul id="logList"></ul>
+                <!-- Logs generated by JS -->
+            </div>
         </div>
 
-        <button class="connect-btn amasis-font" id="bleConnectBtn">Connect ESP32</button>
+        <div class="discord-main">
+            <img src="LOGO.png" alt="MONOPOLY" style="max-width: 400px; width: 100%; height: auto; margin-top: 10px; margin-bottom: 5px; filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.4));">
+            <h2 class="dashboard-subtitle">Dashboard</h2>
 
-        <div class="status-container" id="statusContainer">
-            Status: <span class="status-dot status-disconnected" id="statusDot">●</span> <span id="statusText">Waiting...</span>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="showPage('properties-page')">
+                    <div class="menu-icon" style="margin-bottom: 5px;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#00a850" stroke="black" stroke-width="2.5" stroke-linejoin="round"><path d="M12 3L2 11h3v10h14V11h3L12 3z"/></svg>
+                    </div>
+                    <b class="kabel-font">Properties</b>
+                </button>
+                <button class="menu-btn" onclick="showPage('draw-page')">
+                    <div class="menu-icon" style="margin-bottom: 5px;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#ff8c00" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="3"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" fill="none"/><line x1="12" y1="17" x2="12.01" y2="17" fill="none"/></svg>
+                    </div>
+                    <b class="kabel-font">Draw Card</b>
+                </button>
+                <button class="menu-btn" onclick="showPage('about-page')">
+                    <div class="menu-icon" style="margin-bottom: 5px;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#444" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M3 19h18"/><path d="M7 19V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v12"/><path d="M7 15h10" fill="none"/></svg>
+                    </div>
+                    <b class="kabel-font">About</b>
+                </button>
+                <button class="menu-btn" onclick="showSoundModal()">
+                    <div class="menu-icon" style="margin-bottom: 5px;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#ce1126" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/></svg>
+                    </div>
+                    <b class="kabel-font">Sounds</b>
+                </button>
+            </div>
         </div>
 
-        <div class="players-header-container">
-            <h3 class="amasis-font">Player Balances</h3>
-            <button class="toggle-btn" id="togglePlayersBtn" onclick="togglePlayers()" style="padding: 5px 15px;">Hide ▲</button>
+        <div class="discord-sidebar">
+            <div class="players-header-container">
+                <h3 class="amasis-font">Online</h3>
+            </div>
+            <div id="dashboard-players"></div>
         </div>
-
-        <div id="dashboard-players"></div>
-
-        <div class="menu-grid">
-            <button class="menu-btn" onclick="showPage('properties-page')">
-                <div class="menu-icon">🏠</div>
-                <b class="amasis-font">Properties</b>
-            </button>
-            <button class="menu-btn" onclick="showPage('draw-page')">
-                <div class="menu-icon">🃏</div>
-                <b class="amasis-font">Draw Card</b>
-            </button>
-            <button class="menu-btn" onclick="showPage('about-page')">
-                <div class="menu-icon">ℹ️</div>
-                <b class="amasis-font">About</b>
-            </button>
-        </div>
-
-        <div id="debugLog">Live Data Stream will appear here...</div>
     </div>
 
     <div id="properties-page" class="page hidden">
@@ -219,6 +457,20 @@
         </div>
     </div>
 
+    <div id="sound-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h2 class="kabel-font" style="margin-bottom: 20px;">MASTER VOLUME</h2>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px;">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#ce1126" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+                <input type="range" id="master-volume-modal" min="0" max="1" step="0.05" value="1" style="cursor: pointer; width: 60%; transform: scale(1.2);" oninput="updateVolume(this.value)">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </div>
+            <button class="menu-btn" style="width: 100%; aspect-ratio: auto; padding: 15px;" onclick="closeSoundModal()">
+                <b class="kabel-font" style="font-size: 1.5rem;">DONE</b>
+            </button>
+        </div>
+    </div>
+
     <div id="name-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <h2 class="amasis-font" id="modal-title">PLAYER 1 NAME</h2>
@@ -243,7 +495,13 @@
                 <span onclick="closeNameEditModal()" style="cursor: pointer; font-size: 16px; font-weight: bold; color: #555;">&times;</span>
             </div>
             <div style="font-size: 14px; margin-bottom: 10px;" id="name-edit-prompt-text">Enter new name:</div>
-            <input type="text" id="name-edit-input" maxlength="10" style="width: 100%; padding: 5px; font-size: 14px; border: 1px solid #0078D7; margin-bottom: 15px; box-sizing: border-box;">
+            <input type="text" id="name-edit-input" maxlength="10" style="width: 100%; padding: 5px; font-size: 14px; border: 1px solid #0078D7; margin-bottom: 5px; box-sizing: border-box;">
+            <label style="font-size: 12px; margin-bottom: 5px; display: block;">Card Color:</label>
+            <input type="color" id="name-edit-color" value="#ffffff" style="width: 100%; height: 30px; border: none; padding: 0; cursor: pointer; margin-bottom: 15px;">
+            <label style="font-size: 12px; margin-bottom: 5px; display: block;">Theme Music File (Blitz Mode, Optional):</label>
+            <input type="file" id="name-edit-music-file" accept="audio/*" style="margin-bottom: 5px; width: 100%;">
+            <div id="current-music-display" style="font-size: 11px; margin-bottom: 15px; color: #666;"></div>
+            <input type="hidden" id="name-edit-music">
             <input type="hidden" id="name-edit-idx">
             <div style="text-align: right;">
                 <button onclick="saveEditedName()" style="background: #e1e1e1; border: 1px solid #adadad; padding: 4px 15px; margin-right: 5px; cursor: pointer; border-radius: 2px;">OK</button>
@@ -320,9 +578,9 @@
 
         function getOwnerDetails(index) {
             if (index >= 0 && index < 7) {
-                return { name: playersDatabase[index].name, css: "owner-p" + (index + 1) };
+                return { name: playersDatabase[index].name, css: "owner-p" + (index + 1), color: playersDatabase[index].color };
             }
-            return { name: "Bank", css: "owner-bank" };
+            return { name: "Bank", css: "owner-bank", color: "#ce1126" };
         }
 
         // ==========================================
@@ -343,8 +601,6 @@
         function showPage(pageId) {
             document.querySelectorAll('.page, #dashboard-page').forEach(el => el.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
-            if(pageId === 'dashboard-page') document.getElementById('marquee-container').classList.remove('hidden');
-            else document.getElementById('marquee-container').classList.add('hidden');
         }
 
         function switchPropertyView(view) {
@@ -380,7 +636,6 @@
                 statusDot.className = 'status-dot status-disconnected';
                 statusText.innerText = 'Disconnected (Waiting for ESP32)';
                 logDebug("Switched to Host Mode. Click Connect ESP32.");
-                document.getElementById('marquee-container').classList.remove('hidden');
 
                 // Host listens to name change requests from WiFi players
                 if(window.firebaseDB) {
@@ -402,7 +657,6 @@
                 statusDot.className = 'status-dot status-cloud';
                 statusText.innerText = 'Syncing from Cloud...';
                 logDebug("Switched to Player Mode. Waiting for Cloud Data...");
-                document.getElementById('marquee-container').classList.remove('hidden');
                 startCloudListener();
             }
         }
@@ -421,12 +675,48 @@
         function startCloudListener() {
             if (isListening || !window.firebaseDB) return;
             isListening = true;
-            console.log("Starting Firebase Listener on /gameState/data");
-            const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/data');
-            window.firebaseOnValue(dbRef, (snapshot) => {
+            console.log("Starting Firebase Listeners on /gameState/data and /gameState/properties");
+            
+            const dataRef = window.firebaseRef(window.firebaseDB, 'gameState/data');
+            window.firebaseOnValue(dataRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    parseIncomingData(data); 
+                    parseIncomingData({ data: data }); 
+                }
+            });
+
+            const propsRef = window.firebaseRef(window.firebaseDB, 'gameState/properties');
+            window.firebaseOnValue(propsRef, (snapshot) => {
+                const props = snapshot.val();
+                if (props) {
+                    parseIncomingData({ properties: props }); 
+                }
+            });
+
+            const profilesRef = window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles');
+            window.firebaseOnValue(profilesRef, (snapshot) => {
+                const profiles = snapshot.val();
+                window.playerProfiles = profiles || {};
+                for (let i = 0; i < 7; i++) {
+                    if (window.playerProfiles[i]) {
+                        playersDatabase[i].name = window.playerProfiles[i].name || playersDatabase[i].name;
+                        playersDatabase[i].color = window.playerProfiles[i].color || '#ffffff';
+                    } else {
+                        // Reset defaults if removed
+                        playersDatabase[i].name = "PLAYER " + (i+1);
+                        playersDatabase[i].color = "#ffffff";
+                    }
+                }
+                if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
+                if (typeof window.renderProperties === 'function') window.renderProperties();
+            });
+            
+            const logsRef = window.firebaseRef(window.firebaseDB, 'gameState/logs');
+            window.firebaseOnValue(logsRef, (snapshot) => {
+                const logs = snapshot.val();
+                if (logs && Array.isArray(logs)) {
+                    window.gameLogs = logs;
+                    if(typeof window.renderLogs === 'function') window.renderLogs();
                 }
             });
         }
@@ -434,10 +724,21 @@
         // ==========================================
         // PLAYER NAME MANAGEMENT (MODAL & DASHBOARD)
         // ==========================================
+        window.playerPropsExpanded = { 0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+        window.togglePlayerProps = function(idx) {
+            window.playerPropsExpanded[idx] = !window.playerPropsExpanded[idx];
+            if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
+        };
+
         window.editPlayerName = function(idx) {
             document.getElementById('name-edit-idx').value = idx;
             document.getElementById('name-edit-prompt-text').innerText = `Enter new name for Player ${idx + 1}`;
             document.getElementById('name-edit-input').value = playersDatabase[idx].name;
+            document.getElementById('name-edit-color').value = playersDatabase[idx].color || '#ffffff';
+            let cm = playersDatabase[idx].music || '';
+            document.getElementById('name-edit-music').value = cm;
+            document.getElementById('current-music-display').innerText = cm ? 'Current: ' + cm : 'No music selected';
+            document.getElementById('name-edit-music-file').value = '';
             document.getElementById('name-edit-modal').classList.remove('hidden');
             document.getElementById('name-edit-input').focus();
             
@@ -456,28 +757,55 @@
         window.saveEditedName = function() {
             const idx = parseInt(document.getElementById('name-edit-idx').value);
             const inputVal = document.getElementById('name-edit-input').value;
+            const colorVal = document.getElementById('name-edit-color').value;
+            let musicVal = document.getElementById('name-edit-music').value.trim();
+            let fileInput = document.getElementById('name-edit-music-file');
+            if (fileInput.files.length > 0) {
+                musicVal = 'Music/' + fileInput.files[0].name;
+            }
             if (inputVal && inputVal.trim() !== "") {
                 const cleanedName = inputVal.trim().substring(0, 10).toUpperCase();
+                
+                if (!window.playerProfiles) window.playerProfiles = {};
+                window.playerProfiles[idx] = { name: cleanedName, color: colorVal, music: musicVal };
+                
+                if (window.firebaseDB) {
+                    const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles');
+                    window.firebaseSet(dbRef, window.playerProfiles);
+                    
+                    // Legacy sync for ESP32
+                    const legacyRef = window.firebaseRef(window.firebaseDB, 'gameState/playerNames');
+                    window.firebaseSet(legacyRef, { idx: idx, name: cleanedName });
+                }
+                
                 playersDatabase[idx].name = cleanedName;
-                sendNameUpdate(idx, cleanedName);
-                // Update DOM directly instead of redrawing
-                const nameEl = document.getElementById(`player-name-${idx}`);
-                if (nameEl) nameEl.innerHTML = cleanedName + ' ✏️';
-                renderProperties(); // Update owner banners
+                playersDatabase[idx].color = colorVal;
+                playersDatabase[idx].music = musicVal;
+                
+                if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
+                if (typeof window.renderProperties === 'function') window.renderProperties();
             }
             closeNameEditModal();
         }
 
-        window.sendNameUpdate = function(idx, name) {
-            if (window.firebaseDB) {
-                // Update just the name array directly in Firebase RTDB
-                window.firebaseDB.ref('gameState/playerNames').set({
-                    idx: idx,
-                    name: name
-                }).then(() => {
-                    console.log("Saved name to cloud:", name);
-                }).catch(e => console.error("Cloud save error:", e));
+        window.resetCustomizations = function() {
+            if(confirm('Are you sure you want to reset all names, colors, and profile pictures for all players?')) {
+                for(let i=0; i<7; i++) localStorage.removeItem('profilePic_' + i);
+                if (window.firebaseDB) {
+                    try { window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles'), null); } catch(e) {}
+                }
+                window.playerProfiles = {};
+                for (let i = 0; i < 7; i++) {
+                    playersDatabase[i].name = "PLAYER " + (i+1);
+                    playersDatabase[i].color = "#ffffff";
+                }
+                if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
+                if (typeof window.renderProperties === 'function') window.renderProperties();
             }
+        };
+
+        window.sendNameUpdate = function(idx, name) {
+            // Deprecated, handled by sync directly in saveEditedName
         }
 
         // The Un-closable Naming Modal
@@ -506,12 +834,6 @@
             }
         });
 
-        
-
-        
-
-        
-
         function onDisconnected() {
             if(false) return;
             document.getElementById('statusDot').className = 'status-dot status-disconnected';
@@ -523,29 +845,47 @@
         // ==========================================
         // DUAL-FORMAT PARSER & UI RENDERERS
         // ==========================================
-        function parseIncomingData(esp32Data) {
+        function parseIncomingData(rootData) {
             try {
+                const esp32Data = rootData.data || {};
+                const esp32Props = rootData.properties || {};
+
                 if(esp32Data.mode !== undefined) currentMode = esp32Data.mode;
                 if(esp32Data.blitzTurnIdx !== undefined) currentTurnIdx = esp32Data.blitzTurnIdx;
 
+                if (esp32Props.properties) {
+                    Object.keys(esp32Props.properties).forEach(key => {
+                        let i = key.startsWith('prop') ? (Number(key.substring(4)) - 1) : Number(key);
+                        let cloudProp = esp32Props.properties[key];
+                        if (propertiesDatabase[i] && cloudProp) {
+                            if (cloudProp.owner !== undefined) propertiesDatabase[i].ownerIndex = Number(cloudProp.owner);
+                            if (cloudProp.mortgaged !== undefined) propertiesDatabase[i].isMortgaged = Boolean(cloudProp.mortgaged);
+                            if (cloudProp.houses !== undefined) propertiesDatabase[i].housesOwned = Number(cloudProp.houses);
+                            if (cloudProp.rent !== undefined) propertiesDatabase[i].currentRent = Number(cloudProp.rent);
+                        }
+                    });
+                    renderProperties(); // Update the bottom grid too
+                }
+                
                 if (esp32Data.players) {
-                    esp32Data.players.forEach((cloudPlayer, i) => {
-                        if (playersDatabase[i]) {
-                            const activePlayer = playersDatabase[i];
-                            activePlayer.balance = cloudPlayer.balance;
-                            activePlayer.inGame = cloudPlayer.inGame;
-                            activePlayer.isBankrupt = cloudPlayer.isBankrupt;
-                            
-                            // Name sync from cloud (if it differs and isn't empty)
-                            if (cloudPlayer.name && cloudPlayer.name.trim() !== '') {
-                                activePlayer.name = cloudPlayer.name;
+                    Object.keys(esp32Data.players).forEach(key => {
+                        try {
+                            let i = key.startsWith('p') ? (Number(key.substring(1)) - 1) : Number(key);
+                            let cloudPlayer = esp32Data.players[key];
+                            if (playersDatabase[i] && cloudPlayer && typeof cloudPlayer === 'object') {
+                                const activePlayer = playersDatabase[i];
+                                if (cloudPlayer.balance !== undefined) activePlayer.balance = Number(cloudPlayer.balance);
+                                if (cloudPlayer.inGame !== undefined) activePlayer.inGame = Boolean(cloudPlayer.inGame);
+                                if (cloudPlayer.isBankrupt !== undefined) activePlayer.isBankrupt = Boolean(cloudPlayer.isBankrupt);
+                                if (cloudPlayer.name && typeof cloudPlayer.name === 'string' && cloudPlayer.name.trim() !== '') activePlayer.name = cloudPlayer.name;
+                                if (cloudPlayer.timeSecs !== undefined && !isNaN(Number(cloudPlayer.timeSecs))) {
+                                    if (Math.abs(activePlayer.timeSecs - Number(cloudPlayer.timeSecs)) > 2) {
+                                        activePlayer.timeSecs = Number(cloudPlayer.timeSecs);
+                                    }
+                                }
                             }
-
-                            // Timer purposefully NOT synced to prevent twitching
-                            // Only sync if drastically off (e.g. Go+ adds time)
-                            if (Math.abs(activePlayer.timeSecs - cloudPlayer.timeSecs) > 5) {
-                                activePlayer.timeSecs = cloudPlayer.timeSecs;
-                            }
+                        } catch(e) {
+                            console.error("Player parse error for key", key, e);
                         }
                     });
                 }
@@ -557,105 +897,222 @@
             }
         }
 
-        function updateMarqueeBanner() {
-            const banner = document.getElementById('game-status-banner');
-            const modeText = currentMode === 2 ? "🔥 BLITZ MODE 🔥" : (currentMode === 1 ? "🎲 STANDARD MODE 🎲" : "⚙️ WAITING FOR SETUP ⚙️");
-            
-            let turnText = " | WAITING TO START...";
-            if (currentTurnIdx >= 0 && currentTurnIdx < 7 && playersDatabase[currentTurnIdx]) {
-                turnText = ` | 👉 CURRENT TURN: ${playersDatabase[currentTurnIdx].name.toUpperCase()}'S TURN 👈`;
-            }
+        // --- GAME LOG DIFF ENGINE ---
+        window.previousPlayers = null;
+        window.previousProperties = null;
 
-            banner.innerText = modeText + turnText + " \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 " + modeText + turnText;
+        function checkGameDiff() {
+            try {
+                if (!window.previousPlayers || !window.previousProperties) {
+                    window.previousPlayers = JSON.parse(JSON.stringify(playersDatabase));
+                    window.previousProperties = JSON.parse(JSON.stringify(propertiesDatabase));
+                    return;
+                }
+                
+                const pOld = window.previousPlayers;
+                const pNew = playersDatabase;
+                const propsOld = window.previousProperties;
+                const propsNew = propertiesDatabase;
+                
+                // Check properties changing hands
+                for(let i=0; i<propsNew.length; i++) {
+                    let newOwner = Number(propsNew[i].ownerIndex);
+                    let oldOwner = Number(propsOld[i].ownerIndex);
+                    if (newOwner !== oldOwner && !isNaN(newOwner)) {
+                        if (newOwner !== -1 && oldOwner !== -1 && pNew[newOwner] && pOld[oldOwner]) {
+                            addGameLog(`Player ${pNew[newOwner].name} acquired ${propsNew[i].name} from ${pOld[oldOwner].name}`, 'property');
+                        } else if (newOwner !== -1 && pNew[newOwner]) {
+                            addGameLog(`Player ${pNew[newOwner].name} bought ${propsNew[i].name}`, 'property');
+                        }
+                    }
+                }
+
+                // Process balance changes comprehensively
+                let payers = [];
+                let receivers = [];
+                
+                for (let i=0; i<pNew.length; i++) {
+                    if (pNew[i].inGame && pOld[i].inGame) {
+                        if (pNew[i].isBankrupt && !pOld[i].isBankrupt) {
+                            addGameLog(`${pNew[i].name} went BANKRUPT!`, 'bankrupt');
+                        } else {
+                            const diff = pNew[i].balance - pOld[i].balance;
+                            if (diff < 0) payers.push({name: pNew[i].name, amount: Math.abs(diff), idx: i});
+                            if (diff > 0) receivers.push({name: pNew[i].name, amount: diff, idx: i});
+                        }
+                    }
+                }
+                
+                // Match payers and receivers to log transfers
+                for (let p of payers) {
+                    let matched = false;
+                    for (let r=0; r<receivers.length; r++) {
+                        if (receivers[r] && receivers[r].amount === p.amount) {
+                            addGameLog(`${p.name} paid $${p.amount} to ${receivers[r].name}`);
+                            receivers[r] = null; // Mark as handled
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        addGameLog(`${p.name} paid $${p.amount}`);
+                    }
+                }
+                
+                // Any remaining receivers got money from the bank
+                for (let r of receivers) {
+                    if (r !== null) {
+                        addGameLog(`${r.name} received $${r.amount}`);
+                    }
+                }
+                
+                window.previousPlayers = JSON.parse(JSON.stringify(playersDatabase));
+                window.previousProperties = JSON.parse(JSON.stringify(propertiesDatabase));
+            } catch (error) {
+                console.error("Diff Engine Error:", error);
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                window.gameLogs.unshift({msg: "CRASH: " + error.message, time: time, type: 'bankrupt'});
+                renderLogs();
+            }
         }
 
         function renderDashboardPlayers() {
+            checkGameDiff(); // Run diff engine before rendering
+            
             const container = document.getElementById('dashboard-players');
+            let sortedPlayers = playersDatabase.map((p, index) => ({...p, originalIndex: index}))
+                                                .filter(p => p.inGame);
+                                                
+            // Sort by balance (highest first), bankrupt players at the very bottom
+            sortedPlayers.sort((a, b) => {
+                if (a.isBankrupt && !b.isBankrupt) return 1;
+                if (!a.isBankrupt && b.isBankrupt) return -1;
+                return b.balance - a.balance;
+            });
             
-            // SMOOTH DOM UPDATE: Do not destroy the DOM if we don't need to! This stops flickering/twitching.
-            const currentRenderCount = container.children.length;
-            const expectedRenderCount = playersDatabase.filter(p => p.inGame).length;
-            
-            if (currentRenderCount === expectedRenderCount && expectedRenderCount > 0) {
-                // Just update the inner text of existing elements!
-                let childIdx = 0;
-                playersDatabase.forEach((player, index) => {
-                    if (!player.inGame) return;
-                    
-                    const cardEl = container.children[childIdx];
-                    
-                    if (player.isBankrupt) {
-                        cardEl.style.background = 'black';
-                        cardEl.style.color = 'white';
-                        cardEl.style.borderColor = '#444';
-                        cardEl.innerHTML = `
-                            <div class="dashboard-player-name amasis-font" style="text-shadow: none;">${player.name}</div>
-                            <div class="dashboard-player-balance amasis-font" style="color: #ff3333; font-size: 1.2rem; margin-top: 15px;">YOU'RE BANKRUPT!</div>
-                        `;
-                    } else {
-                        cardEl.style.background = '';
-                        cardEl.style.color = '';
-                        
-                        if (currentTurnIdx === index) {
-                            cardEl.classList.add('active-turn');
-                        } else {
-                            cardEl.classList.remove('active-turn');
-                        }
-                        
-                        cardEl.innerHTML = `
-                            <div class="dashboard-player-name amasis-font" id="player-name-${index}" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
-                            <div class="dashboard-player-balance amasis-font" id="player-bal-${index}">
-                                $${player.balance}
-                                <div>
-                                    <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    childIdx++;
-                });
-                return;
+            let topPlayerIndex = -1;
+            if (sortedPlayers.length > 0 && !sortedPlayers[0].isBankrupt) {
+                topPlayerIndex = sortedPlayers[0].originalIndex;
             }
 
-            // FULL REDRAW (Only happens on first load or when players enter/leave game)
+            // FULL REDRAW (Because we sort, smooth DOM updates are too complex to manage without a framework)
             container.innerHTML = '';
-            playersDatabase.forEach((player, index) => {
-                if (!player.inGame) return; // Hide players not in the game
+            
+            sortedPlayers.forEach(player => {
+                const index = player.originalIndex;
+                const playerProps = propertiesDatabase.filter(p => p.ownerIndex === index);
+                
+                let isExpanded = window.playerPropsExpanded[index];
+                let arrowHtml = playerProps.length > 0 ? `<div onclick="window.togglePlayerProps(${index})" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.2rem; user-select: none; color: #555; z-index: 10;">${isExpanded ? '▲' : '▼'}</div>` : '';
+
+                let propsHtml = '';
+                if (playerProps.length > 0) {
+                    propsHtml = `<div class="mini-props-container" style="display: ${isExpanded ? 'flex' : 'none'}; max-height: none;">`;
+                    playerProps.forEach(prop => {
+                        let headerColor = prop.isMortgaged ? '#555' : prop.color;
+                        let rentText = prop.currentRent !== undefined ? `$${prop.currentRent}` : '$0';
+                        let housesText = prop.housesOwned > 0 ? `🏠x${prop.housesOwned} ` : '';
+                        let mortgagedText = prop.isMortgaged ? `<div style="color:#ce1126;font-size:0.45rem;margin-top:1px;">MORTGAGED</div>` : '';
+                    propsHtml += `
+                        <div class="mini-prop-card ${prop.isMortgaged ? 'mortgaged' : ''}" style="border-top: 5px solid ${headerColor};">
+                            <div class="mini-prop-header">${prop.name}</div>
+                            <div class="mini-prop-body">${housesText}Rent:$${prop.currentRent}<br>${mortgagedText}</div>
+                        </div>`;
+                    });
+                    propsHtml += '</div>';
+                }
+
+                let profilePicSrc = localStorage.getItem('profilePic_' + index) || `profile_${index}.png`;
+                let fallbackAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=random&color=fff&size=45&bold=true`;
+                let avatarHtml = `<label for="avatar-upload-${index}" style="cursor: pointer; display: inline-block;" title="Click to change profile picture">
+                                    <input id="avatar-upload-${index}" type="file" style="display:none;" accept="image/*" onchange="window.handleProfileUpload(event, ${index})">
+                                    <img src="${profilePicSrc}" alt="${player.name}" class="player-avatar" style="cursor: pointer;" onerror="this.onerror=null; this.src='${fallbackAvatarUrl}';">
+                                  </label>`;
+
+                let crownHtml = (index === topPlayerIndex) ? `<span title="1st Place!" style="position: absolute; top: -15px; left: -15px; font-size: 2.2rem; transform: rotate(-25deg); text-shadow: 3px 3px 0 rgba(0,0,0,0.3); z-index: 20; pointer-events: none;">👑</span>` : '';
 
                 if (player.isBankrupt) {
                     const bankruptCard = `
-                        <div class="dashboard-player-card" style="background: black; color: white; border-color: #444; opacity: 0.8;">
-                            <div class="dashboard-player-name amasis-font" style="text-shadow: none;">${player.name}</div>
-                            <div class="dashboard-player-balance amasis-font" style="color: #ff3333; font-size: 1.2rem; margin-top: 15px;">
-                                YOU'RE BANKRUPT!
+                        <div class="dashboard-player-card" style="background: linear-gradient(135deg, ${player.color || '#222'} 0%, #111 100%); color: white; border-color: #444; opacity: 0.8; position: relative;">
+                            ${arrowHtml}
+                            <div class="player-card-header">
+                                <div style="filter: grayscale(100%); display: inline-block;">${avatarHtml}</div>
+                                <div class="player-info-col">
+                                    <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name}</div>
+                                    <div class="dashboard-player-balance amasis-font" style="color: #ff3333; font-size: 1rem;">BANKRUPT!</div>
+                                    <div id="player-time-${index}" class="dashboard-player-time">${formatTime(player.timeSecs)}</div>
+                                </div>
                             </div>
+                            ${propsHtml}
                         </div>
                     `;
                     container.innerHTML += bankruptCard;
-                    return;
-                }
-
-                // Highlight the active turn
-                let activeClass = (currentTurnIdx === index) ? 'active-turn' : '';
-                
-                const playerCard = `
-                    <div class="dashboard-player-card ${activeClass}" id="player-card-${index}">
-                        <div class="dashboard-player-name amasis-font" id="player-name-${index}" onclick="editPlayerName(${index})" title="Click to edit name">${player.name} ✏️</div>
-                        <div class="dashboard-player-balance amasis-font" id="player-bal-${index}">
-                            $${player.balance}
-                            <div>
-                                <div class="dashboard-player-time" id="player-time-${index}">${formatTime(player.timeSecs)}</div>
+                } else {
+                    let activeClass = (currentTurnIdx === index && currentMode !== 1) ? 'active-turn' : '';
+                    const playerCard = `
+                        <div class="dashboard-player-card ${activeClass}" style="position: relative; transition: all 0.3s ease; background: linear-gradient(135deg, ${player.color || '#ffffff'} 0%, #ffffff 80%);">
+                            ${crownHtml}
+                            ${arrowHtml}
+                            <div class="player-card-header">
+                                ${avatarHtml}
+                                <div class="player-info-col">
+                                    <div class="dashboard-player-name amasis-font" onclick="editPlayerName(${index})" title="Click to edit name">${player.name}</div>
+                                    <div class="dashboard-player-balance amasis-font">
+                                        $${player.balance}
+                                        <div style="display: ${currentMode === 1 ? 'none' : 'block'};">
+                                            <div id="player-time-${index}" class="dashboard-player-time">${formatTime(player.timeSecs)}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            ${propsHtml}
                         </div>
-                    </div>
-                `;
-                container.innerHTML += playerCard;
+                    `;
+                    container.innerHTML += playerCard;
+                }
             });
         }
+
+        let lastPlayedTurnIdx = -1;
+        window.currentAudio = null;
+        window.masterVolume = 1.0;
+        
+        window.updateVolume = function(vol) {
+            window.masterVolume = parseFloat(vol);
+            if (window.currentAudio) {
+                window.currentAudio.volume = window.masterVolume;
+            }
+        };
 
         // --- LOCAL TIMER TICKING ENGINE ---
         setInterval(() => {
             if (currentMode === 2 && currentTurnIdx >= 0 && currentTurnIdx < 7) {
+                if (currentTurnIdx !== lastPlayedTurnIdx) {
+                    let isFirstLoad = (lastPlayedTurnIdx === -1);
+                    lastPlayedTurnIdx = currentTurnIdx;
+                    
+                    if (!isFirstLoad) {
+                        const activeP = playersDatabase[currentTurnIdx];
+                        
+                        if (window.currentAudio) {
+                            window.currentAudio.pause();
+                            window.currentAudio.currentTime = 0;
+                        }
+                        
+                        if (activeP && activeP.music) {
+                            window.currentAudio = new Audio(activeP.music);
+                            window.currentAudio.volume = window.masterVolume;
+                            window.currentAudio.play().catch(e => {
+                                console.log("Audio play failed:", e);
+                                if (e.name === 'NotAllowedError') {
+                                    alert("Browser blocked audio autoplay! Please click anywhere on the dashboard first to allow music to play.");
+                                }
+                            });
+                        } else {
+                            window.currentAudio = null;
+                        }
+                    }
+                }
                 const activePlayer = playersDatabase[currentTurnIdx];
                 if (activePlayer && activePlayer.inGame && !activePlayer.isBankrupt) {
                     if (activePlayer.timeSecs > 0) {
@@ -667,7 +1124,7 @@
             }
         }, 1000);
 
-        function createCardHTML(prop) {
+        function createCardHTML(prop, showOwnerBanner = true) {
             const mortgageValue = Math.floor(prop.price / 2);
             const unmortgageValue = mortgageValue + Math.floor((mortgageValue + 9) / 10);
             const owner = getOwnerDetails(prop.ownerIndex);
@@ -753,9 +1210,10 @@
                     <div class="card-body">
                         ${innerBodyHTML}
                     </div>
-                    <div class="owner-banner amasis-font ${owner.css}">
+                    ${showOwnerBanner && prop.ownerIndex !== -1 ? `
+                    <div class="owner-banner amasis-font ${owner.css}" style="${owner.color && owner.color !== '#ffffff' ? 'background: ' + owner.color + '; color: white; text-shadow: 1px 1px 0 #000;' : ''}">
                         OWNER: ${owner.name}
-                    </div>
+                    </div>` : ''}
                 </div>
             `;
         }
@@ -775,14 +1233,14 @@
             scrollContainer.innerHTML = '';
 
             const groups = { 
-                "-1": { title: "The Bank", props: [] }, 
-                "0": { title: playersDatabase[0].name, props: [] }, 
-                "1": { title: playersDatabase[1].name, props: [] }, 
-                "2": { title: playersDatabase[2].name, props: [] }, 
-                "3": { title: playersDatabase[3].name, props: [] },
-                "4": { title: playersDatabase[4].name, props: [] },
-                "5": { title: playersDatabase[5].name, props: [] },
-                "6": { title: playersDatabase[6].name, props: [] }
+                "-1": { title: "The Bank", color: "#ce1126", props: [] }, 
+                "0": { title: playersDatabase[0].name, color: playersDatabase[0].color, props: [] }, 
+                "1": { title: playersDatabase[1].name, color: playersDatabase[1].color, props: [] }, 
+                "2": { title: playersDatabase[2].name, color: playersDatabase[2].color, props: [] }, 
+                "3": { title: playersDatabase[3].name, color: playersDatabase[3].color, props: [] },
+                "4": { title: playersDatabase[4].name, color: playersDatabase[4].color, props: [] },
+                "5": { title: playersDatabase[5].name, color: playersDatabase[5].color, props: [] },
+                "6": { title: playersDatabase[6].name, color: playersDatabase[6].color, props: [] }
             };
 
             propertiesDatabase.forEach(prop => {
@@ -797,7 +1255,7 @@
                 let pagesHTML = '';
                 chunks.forEach(chunk => {
                     let cardsHTML = '';
-                    chunk.forEach(prop => { cardsHTML += createCardHTML(prop); });
+                    chunk.forEach(prop => { cardsHTML += createCardHTML(prop, false); });
                     pagesHTML += `<div class="grid-page">${cardsHTML}</div>`;
                 });
 
@@ -813,14 +1271,33 @@
             });
         }
 
+        window.showSoundModal = function() {
+            const volInput = document.getElementById('master-volume-modal');
+            if (volInput) volInput.value = window.masterVolume;
+            document.getElementById('sound-modal').classList.remove('hidden');
+        };
+        
+        window.closeSoundModal = function() {
+            document.getElementById('sound-modal').classList.add('hidden');
+        };
+
         window.onload = () => {
             console.log("=== RUNNING MONOPOLY DASHBOARD V11 (WIFI) ===");
             document.title = "Monopoly Dashboard V11 (WiFi)";
+
             renderProperties();
             renderDashboardPlayers();
+            if(window.renderLogs) window.renderLogs();
             startCloudListener();
+            
             // Default setup view
-            document.getElementById('marquee-container').classList.remove('hidden');
+        // removed marquee code
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            if(typeof window.gameLogs !== 'undefined') {
+                window.gameLogs.unshift({msg: "Dashboard Online. Awaiting ESP32 transactions...", time: time, type: 'normal'});
+            }
+            if(typeof window.renderLogs !== 'undefined') window.renderLogs();
         };
     </script>
 </body>
