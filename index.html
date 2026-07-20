@@ -385,11 +385,16 @@
                     </div>
                     <b class="kabel-font">Properties</b>
                 </button>
-                <button class="menu-btn" onclick="showPage('draw-page')">
+                <button class="menu-btn" onclick="populateTradeDropdowns(); showPage('more-page')">
                     <div class="menu-icon" style="margin-bottom: 5px;">
-                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#ff8c00" stroke="black" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="3"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" fill="none"/><line x1="12" y1="17" x2="12.01" y2="17" fill="none"/></svg>
+                        <!-- Monopoly theme Plus Icon -->
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="#000" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" fill="#fff" stroke="black" stroke-width="3" />
+                            <line x1="12" y1="8" x2="12" y2="16" stroke="black" stroke-width="4" />
+                            <line x1="8" y1="12" x2="16" y2="12" stroke="black" stroke-width="4" />
+                        </svg>
                     </div>
-                    <b class="kabel-font">Draw Card</b>
+                    <b class="kabel-font">More</b>
                 </button>
                 <button class="menu-btn" onclick="showPage('about-page')">
                     <div class="menu-icon" style="margin-bottom: 5px;">
@@ -430,12 +435,96 @@
         <div id="properties-scroll" class="hidden"></div>
     </div>
 
-    <div id="draw-page" class="page hidden">
+    <!-- MORE PAGE -->
+    <div id="more-page" class="page hidden">
         <div class="header-bar">
             <button class="back-btn amasis-font" onclick="showPage('dashboard-page')">⬅ Back</button>
-            <h2 class="page-title">Draw a Card</h2>
+            <h2 class="page-title">More</h2>
+        </div>
+        
+        <!-- Centered Buttons -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; padding: 20px;">
+            <div style="display: flex; gap: 15px; width: 100%; max-width: 500px;">
+                <button class="menu-btn" onclick="showPage('gambling-page')" style="flex: 1;">
+                    <b class="kabel-font" style="font-size: 1.2rem;">Gambling</b>
+                </button>
+                <button class="menu-btn" onclick="showPage('cards-page')" style="flex: 1;">
+                    <b class="kabel-font" style="font-size: 1.2rem;">Cards</b>
+                </button>
+            </div>
+            <button class="menu-btn" onclick="buildTradeUI(); showPage('trade-page');" style="width: 100%; max-width: 500px; background: #0078D7; color: white; padding: 20px;">
+                <b class="kabel-font" style="font-size: 1.8rem;">Trade</b>
+            </button>
+        </div>
+    </div>
+
+    <!-- GAMBLING PAGE -->
+    <div id="gambling-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('more-page')">⬅ Back</button>
+            <h2 class="page-title">Gambling</h2>
         </div>
         <div class="placeholder-text">This section is currently empty.</div>
+    </div>
+
+    <!-- CARDS PAGE -->
+    <div id="cards-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('more-page')">⬅ Back</button>
+            <h2 class="page-title">Cards</h2>
+        </div>
+        <div class="placeholder-text">This section is currently empty.</div>
+    </div>
+
+    <!-- TRADE PAGE -->
+    <div id="trade-page" class="page hidden">
+        <div class="header-bar">
+            <button class="back-btn amasis-font" onclick="showPage('more-page')">⬅ Back</button>
+            <h2 class="page-title">Trade</h2>
+        </div>
+        <div style="padding: 15px; max-width: 800px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px;">
+                <!-- PLAYER 1 -->
+                <div style="flex: 1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                    <h3 class="kabel-font" style="text-align: center; margin-bottom: 10px;">Player 1 (Offering)</h3>
+                    <div id="p1-selector" onclick="toggleTradeDropdown(1)" style="background: white; border-radius: 5px; cursor: pointer; margin-bottom: 10px; position: relative; border: 2px solid #ccc;">
+                        <div id="p1-selected" style="color: black; text-align: center; font-weight: bold; padding: 10px;">Select Player 1</div>
+                        <div id="p1-options" style="display: none; position: absolute; top: 100%; left: -2px; right: -2px; background: white; border: 2px solid #ccc; z-index: 10; max-height: 250px; overflow-y: auto; border-radius: 0 0 5px 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></div>
+                    </div>
+                    
+                    <label>Money to offer (Max: $<span id="trade-p1-max">0</span>):</label>
+                    <input type="number" id="trade-p1-money" min="0" value="0" style="width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border-radius: 5px; color: black;">
+                    
+                    <label>Properties to offer:</label>
+                    <div id="trade-p1-props" style="background: white; color: black; max-height: 200px; overflow-y: auto; padding: 5px; border-radius: 5px; border: 1px solid #ccc;"></div>
+                </div>
+
+                <!-- PLAYER 2 -->
+                <div style="flex: 1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                    <h3 class="kabel-font" style="text-align: center; margin-bottom: 10px;">Player 2 (Target)</h3>
+                    <div id="p2-selector" onclick="toggleTradeDropdown(2)" style="background: white; border-radius: 5px; cursor: pointer; margin-bottom: 10px; position: relative; border: 2px solid #ccc;">
+                        <div id="p2-selected" style="color: black; text-align: center; font-weight: bold; padding: 10px;">Select Player 2</div>
+                        <div id="p2-options" style="display: none; position: absolute; top: 100%; left: -2px; right: -2px; background: white; border: 2px solid #ccc; z-index: 10; max-height: 250px; overflow-y: auto; border-radius: 0 0 5px 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></div>
+                    </div>
+                    
+                    <label>Money requested (Max: $<span id="trade-p2-max">0</span>):</label>
+                    <input type="number" id="trade-p2-money" min="0" value="0" style="width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border-radius: 5px; color: black;">
+                    
+                    <label>Properties requested:</label>
+                    <div id="trade-p2-props" style="background: white; color: black; max-height: 200px; overflow-y: auto; padding: 5px; border-radius: 5px; border: 1px solid #ccc;"></div>
+                </div>
+            </div>
+            
+            <button onclick="proposeTrade()" style="width: 100%; padding: 15px; font-size: 1.5rem; background: #ff8c00; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; border: 3px solid black; margin-bottom: 20px;" class="kabel-font">PROPOSE TRADE</button>
+            
+            <!-- Active Trade Proposals Window -->
+            <div style="background: white; border-radius: 10px; border: 3px solid black; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                <h3 class="kabel-font" style="text-align: center; margin-top: 0; margin-bottom: 15px; color: black; font-size: 1.6rem; border-bottom: 2px solid #ccc; padding-bottom: 10px;">Active Trade Proposals</h3>
+                <div id="trade-proposals-container" style="display: flex; flex-direction: column; gap: 15px; max-height: 350px; overflow-y: auto; padding-right: 5px;">
+                    <div class="placeholder-text" style="color: #666;">No active trades.</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="about-page" class="page hidden">
@@ -745,6 +834,14 @@
                 }
                 if (typeof window.renderAssetLists === 'function') window.renderAssetLists();
             });
+            
+            const tradesRef = window.firebaseRef(window.firebaseDB, 'gameState/tradeProposals');
+            window.firebaseOnValue(tradesRef, (snapshot) => {
+                const trades = snapshot.val();
+                window.tradeProposals = trades || {};
+                if (typeof window.renderTradeProposals === 'function') window.renderTradeProposals();
+                if (typeof window.renderAssetLists === 'function') window.renderAssetLists();
+            });
 
             const logsRef = window.firebaseRef(window.firebaseDB, 'gameState/logs');
             window.firebaseOnValue(logsRef, (snapshot) => {
@@ -809,19 +906,28 @@
                 if (!window.playerProfiles) window.playerProfiles = {};
                 window.playerProfiles[idx] = { name: cleanedName, color: colorVal, music: musicVal, avatar: avatarVal };
                 
-                if (window.firebaseDB) {
-                    const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles');
-                    window.firebaseSet(dbRef, window.playerProfiles);
-                    
-                    // Legacy sync for ESP32
-                    const legacyRef = window.firebaseRef(window.firebaseDB, 'gameState/playerNames');
-                    window.firebaseSet(legacyRef, { idx: idx, name: cleanedName });
-                }
-                
                 playersDatabase[idx].name = cleanedName;
                 playersDatabase[idx].color = colorVal;
                 playersDatabase[idx].music = musicVal;
                 playersDatabase[idx].avatar = avatarVal;
+                
+                if (window.firebaseDB) {
+                    const dbRef = window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles');
+                    window.firebaseSet(dbRef, window.playerProfiles);
+                    
+                    const playersToPush = {};
+                    for (let i = 0; i < 7; i++) {
+                        playersToPush[i] = { 
+                            balance: playersDatabase[i].balance, 
+                            inGame: playersDatabase[i].inGame, 
+                            isBankrupt: playersDatabase[i].isBankrupt, 
+                            name: playersDatabase[i].name, 
+                            timeSecs: playersDatabase[i].timeSecs 
+                        };
+                    }
+                    window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/data/players'), playersToPush);
+                    window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/syncCmd'), { ts: Date.now() });
+                }
                 
                 if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
                 if (typeof window.renderProperties === 'function') window.renderProperties();
@@ -832,14 +938,32 @@
         window.resetCustomizations = function() {
             if(confirm('Are you sure you want to reset all names, colors, and profile pictures for all players?')) {
                 for(let i=0; i<7; i++) localStorage.removeItem('profilePic_' + i);
-                if (window.firebaseDB) {
-                    try { window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles'), null); } catch(e) {}
-                }
+                
                 window.playerProfiles = {};
                 for (let i = 0; i < 7; i++) {
                     playersDatabase[i].name = "PLAYER " + (i+1);
                     playersDatabase[i].color = "#ffffff";
+                    playersDatabase[i].music = "";
+                    playersDatabase[i].avatar = "";
                 }
+                
+                if (window.firebaseDB) {
+                    try { window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/playerProfiles'), null); } catch(e) {}
+                    
+                    const playersToPush = {};
+                    for (let i = 0; i < 7; i++) {
+                        playersToPush[i] = { 
+                            balance: playersDatabase[i].balance, 
+                            inGame: playersDatabase[i].inGame, 
+                            isBankrupt: playersDatabase[i].isBankrupt, 
+                            name: playersDatabase[i].name, 
+                            timeSecs: playersDatabase[i].timeSecs 
+                        };
+                    }
+                    window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/data/players'), playersToPush);
+                    window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/syncCmd'), { ts: Date.now() });
+                }
+                
                 if (typeof window.renderDashboardPlayers === 'function') window.renderDashboardPlayers();
                 if (typeof window.renderProperties === 'function') window.renderProperties();
             }
@@ -932,6 +1056,10 @@
                 }
                 
                 renderDashboardPlayers();
+                
+                if (document.getElementById('trade-page') && !document.getElementById('trade-page').classList.contains('hidden')) {
+                    if (typeof window.populateTradeDropdowns === 'function') window.populateTradeDropdowns();
+                }
                 
             } catch (error) {
                 console.error("JSON Parsing error:", error);
@@ -1312,6 +1440,7 @@
         }
 
         window.assetLists = { pictures: [], music: [] };
+        window.tradeProposals = {};
 
         window.addAsset = function(type, val) {
             if (!val || val.trim() === '') return;
@@ -1348,6 +1477,286 @@
             // Sync settings master volume UI if open
             const volInput = document.getElementById('master-volume-settings');
             if (volInput) volInput.value = window.masterVolume;
+        };
+
+        window.tradeP1Idx = -1;
+        window.tradeP2Idx = -1;
+
+        window.toggleTradeDropdown = function(playerNum) {
+            const opts = document.getElementById(`p${playerNum}-options`);
+            if (opts.style.display === 'none' || opts.style.display === '') {
+                // Close the other one
+                document.getElementById(`p${playerNum === 1 ? 2 : 1}-options`).style.display = 'none';
+                opts.style.display = 'block';
+            } else {
+                opts.style.display = 'none';
+            }
+        };
+
+        window.selectTradePlayer = function(playerNum, idx) {
+            if (playerNum === 1) window.tradeP1Idx = idx;
+            else window.tradeP2Idx = idx;
+            
+            const p = playersDatabase[idx];
+            // Support both generic icons and uploaded avatars
+            const defaultIcon = "https://cdn-icons-png.flaticon.com/512/1144/1144709.png";
+            let displayAvatar = p.avatar ? p.avatar : defaultIcon;
+            if (p.avatar && p.avatar.startsWith('Pictures/')) {
+                displayAvatar = window.location.href.split('/').slice(0, -1).join('/') + '/' + p.avatar;
+            }
+            
+            const html = `
+                <div style="display: flex; align-items: center; gap: 10px; padding: 5px;">
+                    <img src="${displayAvatar}" style="width: 40px; height: 40px; border-radius: 5px; background: ${p.color}; object-fit: cover; box-shadow: 0 0 5px rgba(0,0,0,0.5);">
+                    <div style="flex: 1; text-align: left;">
+                        <div style="font-weight: bold; color: black; font-size: 1.1rem; line-height: 1;">${p.name}</div>
+                        <div style="color: #00a850; font-weight: bold; font-size: 1.2rem;">$${p.balance}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById(`p${playerNum}-selected`).innerHTML = html;
+            document.getElementById(`p${playerNum}-options`).style.display = 'none';
+            
+            buildTradeUI();
+        };
+
+        window.populateTradeDropdowns = function() {
+            let optionsHtml = '';
+            // Only players inGame and not bankrupt
+            playersDatabase.forEach((p, i) => {
+                if (p.inGame && !p.isBankrupt) {
+                    const defaultIcon = "https://cdn-icons-png.flaticon.com/512/1144/1144709.png";
+                    let displayAvatar = p.avatar ? p.avatar : defaultIcon;
+                    if (p.avatar && p.avatar.startsWith('Pictures/')) {
+                        displayAvatar = window.location.href.split('/').slice(0, -1).join('/') + '/' + p.avatar;
+                    }
+                    
+                    optionsHtml += `
+                        <div onclick="event.stopPropagation(); selectTradePlayer(1, ${i})" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='white'">
+                            <img src="${displayAvatar}" style="width: 40px; height: 40px; border-radius: 5px; background: ${p.color}; object-fit: cover; box-shadow: 0 0 5px rgba(0,0,0,0.5);">
+                            <div style="flex: 1; text-align: left;">
+                                <div style="font-weight: bold; color: black; font-size: 1.1rem; line-height: 1;">${p.name}</div>
+                                <div style="color: #00a850; font-weight: bold; font-size: 1.2rem;">$${p.balance}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (optionsHtml === '') {
+                optionsHtml = '<div style="padding: 10px; color: #666; text-align: center;">No active players</div>';
+            }
+            
+            document.getElementById('p1-options').innerHTML = optionsHtml;
+            
+            let optionsHtml2 = optionsHtml.replace(/selectTradePlayer\(1/g, 'selectTradePlayer(2');
+            document.getElementById('p2-options').innerHTML = optionsHtml2;
+            
+            // Auto select if possible, but don't overwrite if already selected
+            const activePlayers = playersDatabase.map((p,i)=>({p,i})).filter(x => x.p.inGame && !x.p.isBankrupt);
+            
+            if (window.tradeP1Idx === -1 && activePlayers.length > 0) selectTradePlayer(1, activePlayers[0].i);
+            else if (window.tradeP1Idx !== -1) selectTradePlayer(1, window.tradeP1Idx);
+            
+            if (window.tradeP2Idx === -1 && activePlayers.length > 1) selectTradePlayer(2, activePlayers[1].i);
+            else if (window.tradeP2Idx === -1 && activePlayers.length === 1) selectTradePlayer(2, activePlayers[0].i);
+            else if (window.tradeP2Idx !== -1) selectTradePlayer(2, window.tradeP2Idx);
+        };
+
+        window.buildTradeUI = function() {
+            const p1Idx = window.tradeP1Idx;
+            const p2Idx = window.tradeP2Idx;
+            
+            if (isNaN(p1Idx) || isNaN(p2Idx) || p1Idx < 0 || p2Idx < 0) return;
+            
+            // Set max money
+            const p1Bal = playersDatabase[p1Idx].balance;
+            const p2Bal = playersDatabase[p2Idx].balance;
+            document.getElementById('trade-p1-max').innerText = p1Bal;
+            document.getElementById('trade-p2-max').innerText = p2Bal;
+            document.getElementById('trade-p1-money').max = p1Bal;
+            document.getElementById('trade-p2-money').max = p2Bal;
+            
+            // Preserve values
+            const p1MoneyInput = document.getElementById('trade-p1-money');
+            const p2MoneyInput = document.getElementById('trade-p2-money');
+            if (parseInt(p1MoneyInput.value) > p1Bal) p1MoneyInput.value = p1Bal;
+            if (parseInt(p2MoneyInput.value) > p2Bal) p2MoneyInput.value = p2Bal;
+            
+            const checkedProps = Array.from(document.querySelectorAll('.trade-cb:checked')).map(cb => cb.value);
+
+            // Render properties
+            const p1PropsDiv = document.getElementById('trade-p1-props');
+            const p2PropsDiv = document.getElementById('trade-p2-props');
+            p1PropsDiv.innerHTML = '';
+            p2PropsDiv.innerHTML = '';
+            
+            propertiesDatabase.forEach((prop, idx) => {
+                if (prop.ownerIndex === -1) return;
+                const isChecked = checkedProps.includes(idx.toString()) ? 'checked' : '';
+                
+                const label = `<label style="display: block; padding: 5px; border-bottom: 1px solid #eee; cursor: pointer;">
+                    <input type="checkbox" value="${idx}" class="trade-cb" data-owner="${prop.ownerIndex}" ${isChecked}> 
+                    <span style="display: inline-block; width: 15px; height: 15px; background: ${prop.color}; margin-right: 5px; vertical-align: middle;"></span>
+                    ${prop.name}
+                </label>`;
+                
+                if (prop.ownerIndex === p1Idx) p1PropsDiv.innerHTML += label;
+                else if (prop.ownerIndex === p2Idx) p2PropsDiv.innerHTML += label;
+            });
+        };
+
+        window.proposeTrade = function() {
+            const p1Idx = window.tradeP1Idx;
+            const p2Idx = window.tradeP2Idx;
+            
+            if (p1Idx === p2Idx) {
+                alert("You cannot trade with yourself.");
+                return;
+            }
+            
+            let p1Money = parseInt(document.getElementById('trade-p1-money').value) || 0;
+            let p2Money = parseInt(document.getElementById('trade-p2-money').value) || 0;
+            
+            if (p1Money > playersDatabase[p1Idx].balance) { alert("Player 1 is offering more money than they have."); return; }
+            if (p2Money > playersDatabase[p2Idx].balance) { alert("Player 2 is offering more money than they have."); return; }
+            
+            const checkboxes = document.querySelectorAll('.trade-cb:checked');
+            let p1PropsList = [];
+            let p2PropsList = [];
+            let p1PropsNames = [];
+            let p2PropsNames = [];
+            
+            checkboxes.forEach(cb => {
+                const propIdx = parseInt(cb.value);
+                const originalOwner = parseInt(cb.getAttribute('data-owner'));
+                if (originalOwner === p1Idx) {
+                    p1PropsList.push(propIdx);
+                    p1PropsNames.push(propertiesDatabase[propIdx].name);
+                } else if (originalOwner === p2Idx) {
+                    p2PropsList.push(propIdx);
+                    p2PropsNames.push(propertiesDatabase[propIdx].name);
+                }
+            });
+            
+            if (!confirm(`Propose trade between ${playersDatabase[p1Idx].name} and ${playersDatabase[p2Idx].name}?`)) return;
+            
+            const tradeId = Date.now().toString();
+            const proposal = {
+                id: tradeId,
+                p1: p1Idx,
+                p2: p2Idx,
+                p1Name: playersDatabase[p1Idx].name,
+                p2Name: playersDatabase[p2Idx].name,
+                p1Money: p1Money,
+                p2Money: p2Money,
+                p1Props: p1PropsList,
+                p2Props: p2PropsList,
+                p1PropsNames: p1PropsNames,
+                p2PropsNames: p2PropsNames,
+                timestamp: tradeId
+            };
+            
+            if (window.firebaseDB) {
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/tradeProposals/' + tradeId), proposal);
+            }
+            
+            showPage('more-page');
+            alert("Trade proposed! It will appear in the Active Trades window.");
+        };
+
+        window.acceptTrade = function(id) {
+            if (!window.tradeProposals[id]) return;
+            const t = window.tradeProposals[id];
+            
+            if (!confirm(`Accept trade between ${t.p1Name} and ${t.p2Name}?`)) return;
+            
+            // Re-validate balances
+            if (t.p1Money > playersDatabase[t.p1].balance || t.p2Money > playersDatabase[t.p2].balance) {
+                alert("Trade failed: A player no longer has enough money.");
+                return;
+            }
+            
+            // Execute Money Swap
+            playersDatabase[t.p1].balance -= t.p1Money;
+            playersDatabase[t.p1].balance += t.p2Money;
+            playersDatabase[t.p2].balance -= t.p2Money;
+            playersDatabase[t.p2].balance += t.p1Money;
+            
+            // Execute Property Swap
+            (t.p1Props || []).forEach(propIdx => {
+                propertiesDatabase[propIdx].ownerIndex = t.p2;
+            });
+            (t.p2Props || []).forEach(propIdx => {
+                propertiesDatabase[propIdx].ownerIndex = t.p1;
+            });
+            
+            // Log it
+            let logMsg = `TRADE: ${t.p1Name} traded [${(t.p1PropsNames||[]).join(', ')} + $${t.p1Money}] with ${t.p2Name} for [${(t.p2PropsNames||[]).join(', ')} + $${t.p2Money}]`;
+            if (window.gameLogs) {
+                window.gameLogs.unshift({msg: logMsg, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), type: 'important'});
+            }
+            
+            if (window.firebaseDB) {
+                const playersToPush = {};
+                for (let i = 0; i < 7; i++) playersToPush[i] = { balance: playersDatabase[i].balance, inGame: playersDatabase[i].inGame, isBankrupt: playersDatabase[i].isBankrupt, name: playersDatabase[i].name, timeSecs: playersDatabase[i].timeSecs };
+                const propsToPush = {};
+                for (let i = 0; i < propertiesDatabase.length; i++) propsToPush[i] = { owner: propertiesDatabase[i].ownerIndex, mortgaged: propertiesDatabase[i].isMortgaged, houses: propertiesDatabase[i].housesOwned, rent: propertiesDatabase[i].currentRent };
+                
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/data/players'), playersToPush);
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/properties/properties'), propsToPush);
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/logs'), window.gameLogs);
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/syncCmd'), { ts: Date.now() });
+                
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/tradeProposals/' + id), null);
+            }
+            
+            renderDashboardPlayers();
+            renderProperties();
+            alert("Trade executed successfully!");
+        };
+
+        window.rejectTrade = function(id) {
+            if (!confirm(`Reject this trade proposal?`)) return;
+            if (window.firebaseDB) {
+                window.firebaseSet(window.firebaseRef(window.firebaseDB, 'gameState/tradeProposals/' + id), null);
+            }
+        };
+
+        window.renderTradeProposals = function() {
+            const container = document.getElementById('trade-proposals-container');
+            if (!container) return;
+            
+            const proposals = Object.values(window.tradeProposals || {});
+            if (proposals.length === 0) {
+                container.innerHTML = '<div class="placeholder-text" style="color: #666;">No active trades.</div>';
+                return;
+            }
+            
+            let html = '';
+            proposals.forEach(t => {
+                html += `
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 2px solid #ddd; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="flex: 1; color: black;">
+                            <strong style="color: #ff8c00; font-size: 1.2rem;">${t.p1Name} offers:</strong><br>
+                            <b>Money:</b> $${t.p1Money}<br>
+                            <b>Props:</b> ${(t.p1PropsNames||[]).join(', ') || 'None'}
+                        </div>
+                        <div style="font-size: 2.5rem; align-self: center; margin: 0 10px;">🔄</div>
+                        <div style="flex: 1; text-align: right; color: black;">
+                            <strong style="color: #00a850; font-size: 1.2rem;">${t.p2Name} offers:</strong><br>
+                            <b>Money:</b> $${t.p2Money}<br>
+                            <b>Props:</b> ${(t.p2PropsNames||[]).join(', ') || 'None'}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button onclick="acceptTrade('${t.id}')" style="flex: 1; background: #00a850; color: white; border: 2px solid black; padding: 12px; font-size: 1.2rem; border-radius: 5px; cursor: pointer; transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" class="kabel-font">ACCEPT</button>
+                        <button onclick="rejectTrade('${t.id}')" style="flex: 1; background: #d32f2f; color: white; border: 2px solid black; padding: 12px; font-size: 1.2rem; border-radius: 5px; cursor: pointer; transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" class="kabel-font">REJECT</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
         };
 
         window.onload = () => {
