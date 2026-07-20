@@ -868,14 +868,76 @@
             document.getElementById('name-edit-input').value = playersDatabase[idx].name;
             document.getElementById('name-edit-color').value = playersDatabase[idx].color || '#ffffff';
             
+            // Hardcoded local assets
+            const localPictures = [
+                "Pictures/DoroHeart.gif", 
+                "Pictures/DoroHeart.png"
+            ];
+            
+            const localMusic = [
+                "Music/'Nigga move' original #counterstrike #cod  #dankmemes #dank.mp3",
+                "Music/a-train-zoom.mp3",
+                "Music/ah-ulol.mp3",
+                "Music/alexis-texas.mp3",
+                "Music/allen-kalbo.mp3",
+                "Music/Ambasing full. Ft dreambull.mp3",
+                "Music/aww-so-cute-ishowspeed.mp3",
+                "Music/ayhelp.mp3",
+                "Music/baby-laughing-meme.mp3",
+                "Music/baliw-by-jb-suarez.mp3",
+                "Music/because-youre-black_GkNhNqH.mp3",
+                "Music/Better Call Saul Theme by Little Barrie Full Original Song.mp3",
+                "Music/better-call-saul-intro (1).mp3",
+                "Music/better-call-saul-intro.mp3",
+                "Music/Breaking Bad Intro.mp3",
+                "Music/donate-sound-here-comes-the-money.mp3",
+                "Music/DU BIST GUT GENUG Sound Effect  Soundboard Link.mp3",
+                "Music/engot.mp3",
+                "Music/f-you-bloody.mp3",
+                "Music/kaching-sound-fx.mp3",
+                "Music/lol-heartsteel.mp3",
+                "Music/maiipit-ka-ngani-jb-suarez.mp3",
+                "Music/Million Fans Around The World! Filipino Meme Sound Effects.mp3",
+                "Music/Pangit ni joven.mp3",
+                "Music/please-speed-i-need-this.mp3",
+                "Music/rizz-sound-effect.mp3",
+                "Music/say-wallahi-ishowspeed.mp3",
+                "Music/scooby-doo-laugh-meme.mp3",
+                "Music/skip-skip-bro-when-does-this-game.mp3",
+                "Music/spongebob-laughing-sound-effect.mp3",
+                "Music/sui-ishowspeed.mp3",
+                "Music/Tito Badang Meme.mp3",
+                "Music/tyler-fkin-1-machine-gun_1.mp3",
+                "Music/tyler1-caveman-rage-2.mp3",
+                "Music/tyler1-fkinaddicted.mp3",
+                "Music/tyler1-hot-food.mp3",
+                "Music/tyler1s-car-impression-sound-effect-2.mp3",
+                "Music/w-speed-song.mp3",
+                "Music/who made that mess you did king Sound effect.mp3",
+                "Music/who-tf-is-giga-n.mp3"
+            ];
+            
+            // Combine with any custom assets from Firebase
+            const combinedPictures = Array.from(new Set([...localPictures, ...(window.assetLists.pictures || [])]));
+            const combinedMusic = Array.from(new Set([...localMusic, ...(window.assetLists.music || [])]));
+            
             // Populate select dropdowns
             const avatarSelect = document.getElementById('name-edit-avatar-url');
-            avatarSelect.innerHTML = '<option value="">None</option>' + (window.assetLists.pictures || []).map(p => `<option value="${p}">${p}</option>`).join('');
+            avatarSelect.innerHTML = '<option value="">None</option>' + combinedPictures.map(p => `<option value="${p}">${p}</option>`).join('');
             avatarSelect.value = playersDatabase[idx].avatar || '';
+            // Handle if value not found in list
+            if (avatarSelect.value !== (playersDatabase[idx].avatar || '')) {
+                avatarSelect.innerHTML += `<option value="${playersDatabase[idx].avatar}">${playersDatabase[idx].avatar}</option>`;
+                avatarSelect.value = playersDatabase[idx].avatar;
+            }
 
             const musicSelect = document.getElementById('name-edit-music-url');
-            musicSelect.innerHTML = '<option value="">None</option>' + (window.assetLists.music || []).map(m => `<option value="${m}">${m}</option>`).join('');
+            musicSelect.innerHTML = '<option value="">None</option>' + combinedMusic.map(m => `<option value="${m}">${m}</option>`).join('');
             musicSelect.value = playersDatabase[idx].music || '';
+            if (musicSelect.value !== (playersDatabase[idx].music || '')) {
+                musicSelect.innerHTML += `<option value="${playersDatabase[idx].music}">${playersDatabase[idx].music}</option>`;
+                musicSelect.value = playersDatabase[idx].music;
+            }
             
             document.getElementById('name-edit-modal').classList.remove('hidden');
             document.getElementById('name-edit-input').focus();
